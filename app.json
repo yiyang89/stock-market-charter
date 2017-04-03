@@ -2,7 +2,7 @@
   "name": "timestamp-service-decky",
   "description": "A simple timestamp api service",
   "repository": "https://github.com/yiyang89/timestamp-service.git",
-  "logo": "",
+  "logo": "http://node-js-sample.herokuapp.com/node.svg",
   "keywords": ["node", "express", "static"],
   "image": "heroku/nodejs"
 }
