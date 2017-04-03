@@ -1,0 +1,8 @@
+{
+  "name": "timestamp-service-decky",
+  "description": "A simple timestamp api service",
+  "repository": "https://github.com/yiyang89/timestamp-service.git",
+  "logo": "",
+  "keywords": ["node", "express", "static"],
+  "image": "heroku/nodejs"
+}
