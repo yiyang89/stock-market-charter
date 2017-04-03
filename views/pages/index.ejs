@@ -9,23 +9,12 @@
 
 <div class="jumbotron text-center Aligner">
   <div class="container">
-    <h1>Timestamp Microservice</h1>
+    <h1>Header Parser Microservice</h1>
     <p>
-      Example calls:
-      <br />
-      https://timestamp-service-decky.herokuapp.com/December%2015,%202015
-      <br />
-      https://timestamp-service-decky.herokuapp.com/1450137600
+      This application responds to only 1 api call at /api/whoami/
       <br />
       <br />
-      Submit a get request with either a natural language date or a unix timestamp,
-      receive a JSON object with both in response. If the input is invalid it will
-      return nulls in the unix and natural object fields.
-      <br />
-      <br />
-      Example response:
-      <br />
-      {"unix":1450137600,"natural":"Tue, 15 Dec 2015"}
+      A JSON object containing your IP address, language, and operating system will be returned.
     </p>
   </div>
 </div>
