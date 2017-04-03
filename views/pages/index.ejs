@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html>
 
-<body>
+<link rel="stylesheet" type="text/css" href="/stylesheets/main.css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.css" rel="stylesheet" type="text/css" />
+<!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css" /> -->
 
-  <link rel="stylesheet" type="text/css" href="/stylesheets/mdb.min.css" />
-  <link rel="stylesheet" type="text/css" href="/stylesheets/main.css" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.css" rel="stylesheet" type="text/css">
+<body>
 
 <div class="jumbotron text-center Aligner">
   <div class="container">
-    <h1>Header Parser Microservice</h1>
+    <h1>Get file size</h1>
+    <br />
+    <form action="/file-size" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" />
+      <input type="submit" />
+    </form>
+    <br />
     <p>
-      This application responds to only 1 api call at /api/whoami/
-      <br />
-      <br />
-      A JSON object containing your IP address, language, and operating system will be returned.
+      Select a file and receive its size in json format.
     </p>
   </div>
 </div>

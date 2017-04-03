@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
-var extractor = require('./scripts/extractor.js');
+var multer = require('multer');
+var upload = multer({dest:'./uploads/'});
+var fs = require('fs');
 
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
@@ -13,13 +15,13 @@ app.get('/', function(request, response) {
   response.render('pages/index');
 });
 
-app.get('/api/whoami/', function(request, response) {
-  var respObject = {"ipaddress": null, "language":null, "software": null};
-  console.log(request.headers);
-  respObject.ipaddress = request.headers['x-forwarded-for'];
-  respObject.language = extractor.parseLanguage(request.headers['x-language']||request.headers['accept-language']);
-  respObject.software = extractor.parseOS(request.headers['user-agent']);
-  response.send(respObject);
+// courtesy of https://howtonode.org/really-simple-file-uploads
+app.post('/file-size', upload.single('file'), function(request, response, next) {
+  console.log(request.file);
+  var size = request.file.size;
+  // delete the temp file
+  fs.unlinkSync('./uploads/' + request.file.filename);
+  response.send({'size':size});
 });
 
 app.listen(app.get('port'), function() {

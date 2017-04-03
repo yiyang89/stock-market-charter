@@ -1,12 +1,13 @@
 body {
   background-color: #3E4551;
+  font-family:monospace;
 }
 
 .jumbotron {
   color: white;
   padding: 0;
   height: 98vh;
-
+  background-color: #3E4551 !important;
 }
 .Aligner {
   display: -webkit-flex;
