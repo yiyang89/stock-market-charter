@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var extractor = require('./scripts/extractor.js');
 
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
@@ -14,9 +15,10 @@ app.get('/', function(request, response) {
 
 app.get('/api/whoami/', function(request, response) {
   var respObject = {"ipaddress": null, "language":null, "software": null};
-  respObject.ipaddress = '';
-  respObject.language = request.headers;
-  respObject.software = '';
+  console.log(request.headers);
+  respObject.ipaddress = request.headers['x-forwarded-for'];
+  respObject.language = extractor.parseLanguage(request.headers['x-language']||request.headers['accept-language']);
+  respObject.software = extractor.parseOS(request.headers['user-agent']);
   response.send(respObject);
 });
 
