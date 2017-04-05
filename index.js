@@ -50,7 +50,7 @@ app.get('/auth/google',
   passport.authenticate('google', { scope: ['email profile'] }));
 
 // get auth callback from google
-app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: 'pages/fail' }), function (request, response) {
+app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: 'views/pages/fail.html' }), function (request, response) {
   console.log("retrieved a callback! Contents:");
   console.log(JSON.stringify(response));
   response.render('pages/success');
