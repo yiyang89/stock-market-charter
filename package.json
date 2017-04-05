@@ -1,24 +1,26 @@
 {
-  "name": "file-size-node",
+  "name": "oauth-app-template",
   "version": "1.0.0",
-  "description": "file-size-node",
+  "description": "oauth-app-template",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yiyang89/file-size-node.git"
+    "url": "git+https://github.com/yiyang89/oauth-app-template.git"
   },
   "author": "Yiyang Kok",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yiyang89/file-size-node/issues"
+    "url": "https://github.com/yiyang89/oauth-app-template/issues"
   },
-  "homepage": "https://github.com/yiyang89/file-size-node#readme",
+  "homepage": "https://github.com/yiyang89/oauth-app-template#readme",
   "dependencies": {
     "ejs": "^2.5.6",
     "express": "^4.15.2",
-    "multer": "^1.3.0"
+    "multer": "^1.3.0",
+    "passport": "^0.3.2",
+    "passport-google-oauth": "^1.0.0"
   }
 }
