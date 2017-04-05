@@ -1,21 +1,21 @@
 {
-  "name": "timestamp-service",
+  "name": "file-size-node",
   "version": "1.0.0",
-  "description": "a timestamp service",
+  "description": "file-size-node",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yiyang89/timestamp-service.git"
+    "url": "git+https://github.com/yiyang89/file-size-node.git"
   },
   "author": "Yiyang Kok",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yiyang89/timestamp-service/issues"
+    "url": "https://github.com/yiyang89/file-size-node/issues"
   },
-  "homepage": "https://github.com/yiyang89/timestamp-service#readme",
+  "homepage": "https://github.com/yiyang89/file-size-node#readme",
   "dependencies": {
     "ejs": "^2.5.6",
     "express": "^4.15.2",
