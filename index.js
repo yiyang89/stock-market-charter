@@ -46,10 +46,8 @@ app.post('/file-size', upload.single('file'), function(request, response, next) 
 
 // auth code from https://c9.io/barberboy/passport-google-oauth2-example
 // send auth request to google
-app.get('/auth/google', function(request, response) {
-  // Do some google auth stuff here
-  passport.authenticate('google', { scope: ['email profile'] });
-});
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['email profile'] }));
 
 // get auth callback from google
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: 'pages/fail' }), function (request, response) {
