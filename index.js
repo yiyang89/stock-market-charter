@@ -1,7 +1,5 @@
 var express = require('express');
 var app = express();
-var multer = require('multer');
-var upload = multer({dest:'./uploads/'});
 var fs = require('fs');
 var passport = require('passport');
 // Each type of passport plugin will require its specific oauth strategy.
@@ -20,7 +18,11 @@ passport.use(new GoogleStrategy({
   },
   function(request, accessToken, refreshToken, profile, done) {
     // Stuff to do after verified.
-    console.log("Logged in: " + profile.id);
+    console.log("PROFILE: " + profile);
+    // console.log("REQUEST: " + JSON.stringify(request));
+    console.log("ACCESS TOKEN: " + JSON.stringify(accessToken));
+    console.log("REFRESH TOKEN: " + JSON.stringify(refreshToken));
+    // console.log("DONE: " + JSON.stringify(done));
     return done("Successfully verified!");
     // User.findOrCreate({ googleId: profile.id }, function (err, user) {
     //   return done(err, user);
@@ -37,15 +39,6 @@ app.set('view engine', 'ejs');
 
 app.get('/', function(request, response) {
   response.render('pages/index');
-});
-
-// courtesy of https://howtonode.org/really-simple-file-uploads
-app.post('/file-size', upload.single('file'), function(request, response, next) {
-  console.log(request.file);
-  var size = request.file.size;
-  // delete the temp file
-  fs.unlinkSync('./uploads/' + request.file.filename);
-  response.send({'size':size});
 });
 
 // auth code from https://c9.io/barberboy/passport-google-oauth2-example
