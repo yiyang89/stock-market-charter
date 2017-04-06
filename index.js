@@ -11,12 +11,18 @@ var GoogleStrategy = require('passport-google-oauth20').Strategy;
 // MOVE THESE INTO ENV VARIABLES BEFORE DEPLOYING.
 var GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 var GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+var AUTHHOST = process.env.AUTH_HOST;
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 passport.use(new GoogleStrategy({
     clientID:     GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
     // callbackURL: "http://oauth-template-decky.herokuapp.com/auth/google/callback",
-    callbackURL:"http://localhost:5000/auth/google/callback",
+    callbackURL: AUTHHOST + '/auth/google/callback',
     passReqToCallback   : true
   },
   function(request, accessToken, refreshToken, profile, done) {
