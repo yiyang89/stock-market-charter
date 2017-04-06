@@ -12,21 +12,17 @@ var GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 passport.use(new GoogleStrategy({
     clientID:     GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
-    // callbackURL: "http://oauth-template-decky.herokuapp.com/auth/google/callback",
-    callbackURL:"http://localhost:5000/auth/google/callback",
+    callbackURL: "http://oauth-template-decky.herokuapp.com/auth/google/callback",
+    // callbackURL:"http://localhost:5000/auth/google/callback",
     passReqToCallback   : true
   },
   function(request, accessToken, refreshToken, profile, done) {
     // Stuff to do after verified.
     console.log("PROFILE: " + profile);
-    // console.log("REQUEST: " + JSON.stringify(request));
     console.log("ACCESS TOKEN: " + JSON.stringify(accessToken));
     console.log("REFRESH TOKEN: " + JSON.stringify(refreshToken));
-    // console.log("DONE: " + JSON.stringify(done));
+    // done is what is returned to the user.
     return done("Successfully verified!");
-    // User.findOrCreate({ googleId: profile.id }, function (err, user) {
-    //   return done(err, user);
-    // });
   }
 ));
 
@@ -47,16 +43,19 @@ app.get('/auth/google',
   passport.authenticate('google', { scope: ['email profile'] }));
 
 // get auth callback from google
-app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/failLogin' }), function (request, response) {
-  // The response that comes back is the content of the "return done('CONTENT'); in the strategy definition"
-  console.log("retrieved a callback! Contents:");
-  console.log(JSON.stringify(response));
-  response.render('pages/success');
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/failLogin' }),
+    function (request, response) {
+    // The response that comes back is the content of the "return done('CONTENT'); in the strategy definition"
+    // console.log("retrieved a callback! Contents:");
+    // console.log(JSON.stringify(response));
+    // response.redirect('/');
+    // response.render('pages/success');
 });
 
 // Failed to login.
 app.get('/failLogin', function (request, response) {
-  response.render(pages/fail)
+  response.render(pages/fail);
 });
 
 app.listen(app.get('port'), function() {
