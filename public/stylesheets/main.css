@@ -1,13 +1,16 @@
 body {
   background-color: #3E4551;
   font-family:monospace;
+  text-align: center;
 }
 
 .jumbotron {
   color: white;
   padding: 0;
-  height: 98vh;
-  background-color: #3E4551 !important;
+  margin-top: 50px;
+  height: 90vh;
+  background-color: #212121 !important;
+  min-width:860px;
 }
 .Aligner {
   display: -webkit-flex;
@@ -16,10 +19,60 @@ body {
   justify-content: center;
 }
 .container {
-  margin-top: -100px;
   max-width: 50%;
 }
 .icon {
   height:300px;
   width:300px;
+}
+.header {
+  height: 60px;
+  width: 100%;
+  background-color: #00bcd4;
+  display: flex;
+  display: -webkit-flex;
+  justify-content: space-between;
+}
+.createNew {
+  background-color: #80deea;
+  font-size: 32px;
+  margin-bottom:10px;
+  height:50px;
+  width: 100%;
+}
+.createNew:hover{
+  background-color: #4dd0e1;
+}
+.title {
+  padding: 15px;
+  font-size: 25px;
+}
+.login {
+  /*float: right;*/
+  padding-right:5px;
+}
+.loginbtn {
+  margin: 0;
+}
+#renderBox {
+  display: block;
+  height: 100%;
+  width: 100%;
+  /*text-align:justify;*/
+}
+.pollBox {
+  display: inline-block;
+  height: 100px;
+  width: 30%;
+  margin: 5px;
+  background-color: white;
+  border-style: solid;
+  border-color: #2196f3;
+  border-width: 1px;
+  border-left-width: 10px;
+}
+.pollBox:hover {
+  border-color: #1565c0;
+  background-color: #e3f2fd;
+  /*border-left-width:13px;*/
 }
