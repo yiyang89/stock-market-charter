@@ -18,6 +18,14 @@ body {
   align-items: center;
   justify-content: center;
 }
+.grid-by-rows {
+  display: -webkit-flex;
+  display: flex;
+  align-items: center;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  max-width: 100%;
+}
 .container {
   max-width: 50%;
 }
@@ -43,6 +51,28 @@ body {
 .createNew:hover{
   background-color: #4dd0e1;
 }
+.btn-wide {
+  width: 70%;
+}
+.contentBox {
+  width:860px;
+  height:90%;
+  background-color: white;
+  color: black;
+}
+.boxContent {
+  padding-top: 10%;
+  width: 100%;
+  transition: 0.3s;
+}
+.paddedText {
+  text-align: left;
+  padding-left: 15%;
+}
+.inputBox {
+  width: 70% !important;
+  margin-top: 30%;
+}
 .title {
   padding: 15px;
   font-size: 25px;
@@ -53,12 +83,6 @@ body {
 }
 .loginbtn {
   margin: 0;
-}
-#listBox {
-  display: block;
-  height: 100%;
-  width: 100%;
-  /*text-align:justify;*/
 }
 .pollBox {
   display: inline-block;

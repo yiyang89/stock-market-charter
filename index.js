@@ -71,9 +71,14 @@ app.get('/api/createpoll/', function(request, response) {
   // Return success or fail to user
   // Create a poll for me to play with.
   console.log("making call to mongowrap to create new poll");
-  mongowrap.createPoll("bob2", "what is a new", ['a person', 'a haircut', 'a cat'], function (result) {
-    console.log(result);
-    response.send("i don't know what a bob is lol");
+  console.log(request.query);
+  mongowrap.createPoll(request.query.userid, request.query.question, [request.query.answer1, request.query.answer2], function (err, result) {
+    // console.log(result);
+    if (err) {
+      response.send({"message":"An error was encountered"});
+    } else {
+      response.send({"message":"Successfully added the poll to db"});
+    }
   });
 });
 

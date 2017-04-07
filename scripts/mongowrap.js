@@ -29,7 +29,7 @@ module.exports.getPolls = function(callback) {
           // If no results found, redirect to a page notifying user
           console.log("mongodb getPolls success: " + result);
           db.close();
-          callback(result);
+          callback(err, result);
         }
       });
     }
@@ -48,7 +48,7 @@ module.exports.getUserPolls = function(user_id, callback) {
           // If no results found, redirect to a page notifying user
           console.log("mongodb getUserPolls success: " + result);
           db.close();
-          callback(result);
+          callback(err, result);
         }
       });
     }
@@ -67,7 +67,7 @@ module.exports.createPoll = function(user_id, poll_question, poll_answers, callb
         } else {
           console.log('Inserted documents into the "users" collection. The documents inserted with "_id" are:', result.length, result);
           db.close();
-          callback(result);
+          callback(err, result);
         }
       });
     }
@@ -87,7 +87,7 @@ module.exports.addPollOption = function(poll_id, new_answer_array, callback) {
         } else {
           console.log("mongodb addPollOption success: " + result);
           db.close();
-          callback(result);
+          callback(err, result);
         }
       });
     }
@@ -106,7 +106,7 @@ module.exports.deletePoll = function(user_id, poll_id, callback) {
         } else {
           console.log("mongodb removeQuery success: " + result);
           db.close();
-          callback(result);
+          callback(err, result);
         }
       });
     }
@@ -130,7 +130,7 @@ module.exports.votePoll = function(user_ip, poll_id, answer, callback) {
           db.collection.update(filterclause, {'voted': voted}, function(err, result) {
             console.log("Updated poll id: " + poll_id)
             db.close();
-            callback(result);
+            callback(err, result);
           });
         }
       });

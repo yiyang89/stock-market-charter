@@ -11,6 +11,26 @@ console.log("voting.js loaded successfully");
 
 // React classes
 var AppComponent = React.createClass({
+  getInitialState: function() {
+    return {showCreateNew: false};
+  },
+  handleCreateNewClick: function() {
+    var newState = this.state.showCreateNew ? false : true;
+    console.log(newState);
+    this.setState({showCreateNew: newState});
+  },
+  handleSubmitNewClick: function(question, answer1, answer2) {
+    // submit the state question, answer1 and answer2 to the server.
+    // Implement a check for EMPTY question, answer1, or answer2
+    var username = user? user.name : '';
+    var params = "question=" + question + "&answer1=" + answer1 + "&answer2=" + answer2 + "&userid=" + username;
+    this.serverRequest = $.getJSON('/api/createpoll?'+params, function (result) {
+      this.setState({
+        list: {result}
+      });
+    });
+    this.setState({showCreateNew: false});
+  },
   render: function() {
     return (<div className="jumbotron container">
       <div className="header">
@@ -19,11 +39,12 @@ var AppComponent = React.createClass({
         </div>
         <LoginArea />
       </div>
-      <CreateNew />
-      <CreateNewArea />
-      <AddOptionArea />
-      <PollDetailsArea />
-      <ListArea />
+      <CreateNew onClick={this.handleCreateNewClick}/>
+      {this.state.showCreateNew? <CreateNewArea displayfunc={this.handleSubmitNewClick}/> :
+        <div><AddOptionArea />
+        <PollDetailsArea />
+        <ListArea /></div> }
+
       </div>);
   }
 });
@@ -43,7 +64,8 @@ var LoginArea = React.createClass({
 });
 var CreateNew = React.createClass({
   render: function() {
-    return (<div className="createNew">Create New</div>);
+    // Has inherited an onclick prop from its parent on creation
+    return (<div className="createNew" onClick={this.props.onClick}>Create New</div>);
   }
 })
 var ListArea = React.createClass({
@@ -57,9 +79,6 @@ var ListArea = React.createClass({
         list: {result}
       });
     }.bind(this));
-    // $.getJSON('/api/getpolls/', function(result) {
-    //   this.setState({list: result});
-    // })
   },
   render: function() {
     // Return either a button or a welcome message based on global being set.
@@ -77,12 +96,44 @@ var ListArea = React.createClass({
   }
 });
 var CreateNewArea = React.createClass({
+  handleClick: function(event) {
+    if (this.state.question !== '' && this.state.answer1 !== '' && this.state.answer2 !== '') {
+      this.props.displayfunc(this.state.question, this.state.answer1, this.state.answer2);
+      } else {
+      alert('Please fill out all fields');
+    }
+  },
+  handleChangeQuestion: function(event) {
+    this.setState({question: event.target.value});
+  },
+  handleChangeAnswer1: function(event) {
+    this.setState({answer1: event.target.value});
+  },
+  handleChangeAnswer2: function(event) {
+    this.setState({answer2: event.target.value});
+  },
+  getInitialState: function() {
+    return {question: '', answer1: '', answer2:''};
+  },
   render: function() {
-    // Div should be positioned above the list area
-    // (Hidden until create new is clicked, animate dropdown style?)
     // Box should contain a form for creating a new poll
-    // Question + 2 answers
-    return null;
+    // Question + 2 answers with preview
+    // TODO: PREVIEW
+    return (<div className="contentBox">
+              <div className="boxContent grid-by-rows">
+                <input className="inputBox" type="text" placeholder="Enter a question" value={this.state.question} onChange={this.handleChangeQuestion} />
+                <br/>
+                <input className="inputBox" type="text" placeholder="Enter an answer" value={this.state.answer1} onChange={this.handleChangeAnswer1} />
+                <br/>
+                <input className="inputBox" type="text" placeholder="Enter another answer" value={this.state.answer2} onChange={this.handleChangeAnswer2} />
+                <br/>
+                <button className="btn btn-info btn-wide" onClick={this.handleClick}>Create your poll!</button>
+              </div>
+              <h2 className="paddedText" >Preview:</h2>
+              <h4 className="paddedText" >{this.state.question}</h4>
+              <h4 className="paddedText" >{this.state.answer1} </h4>
+              <h4 className="paddedText" >{this.state.answer2} </h4>
+          </div>);
   }
 })
 var AddOptionArea = React.createClass({
@@ -102,11 +153,6 @@ var PollDetailsArea = React.createClass({
   }
 })
 
-// Render app
-ReactDOM.render(<AppComponent/>, document.getElementById('votingApp'));
-
-
-
 // Request to backend for login
 function someMethod(response) {
   console.log(response);
@@ -122,14 +168,6 @@ function processLogin() {
       console.log(JSON.stringify(data));
     }
   });
-}
-
-// Request to backend for initial polls.
-function getPolls() {
-  // When rendering, check for votes from this ip against the list
-  // -> Will show the user which polls they have voted on already
-  // Indicate with a green tint?
-
 }
 
 // Request to backend for poll creation (pollanswers as an array)
@@ -153,3 +191,6 @@ function deletePoll(poll_id) {
 function votePoll(poll_id, poll_answer) {
 
 }
+
+// Render app
+ReactDOM.render(<AppComponent/>, document.getElementById('votingApp'));
