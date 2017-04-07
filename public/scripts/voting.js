@@ -1,6 +1,6 @@
 // Globals:
-// var host = "http://192.168.0.53:5000";
-var host = "http://voting-app-decky.herokuapp.com";
+var host = "http://192.168.0.53:5000";
+// var host = "http://voting-app-decky.herokuapp.com";
 var user = null;
 
 console.log("voting.js loaded successfully");
@@ -43,19 +43,31 @@ function processLogin() {
 }
 
 // Request to backend for initial polls.
+function getPolls() {
+  // When rendering, check for votes from this ip against the list
+  // -> Will show the user which polls they have voted on already
+  // Indicate with a green tint?
 
-// Request to backend for single poll.
+}
 
-// Request to backend for poll creation
+// Request to backend for poll creation (pollanswers as an array)
+function createPoll(poll_question, poll_answers) {
+// Receive a success or fail from the server.
+// If success, add to the rendered list
+// If fail, notify user
+}
 
-// Request to backend for poll modification
+// Request to backend to add a poll answer option
+function addPollOption(poll_id, new_answer) {
+
+}
 
 // Request to backend for poll deletion
+function deletePoll(poll_id) {
+  // Bundle user's id the request
+}
 
 // Request to backend to vote
+function votePoll(poll_id, poll_answer) {
 
-// Render login area
-
-
-// Main display area class (REACT)
-// $("#loginButton").on("click", processLogin());
+}
