@@ -36,7 +36,7 @@ module.exports.getPolls = function(callback) {
   });
 }
 
-module.exports.getUserPolls = function(user_id) {
+module.exports.getUserPolls = function(user_id, callback) {
   MongoClient.connect(url, function (err, db) {
     if (err) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -55,28 +55,26 @@ module.exports.getUserPolls = function(user_id) {
   });
 }
 
-module.exports.createPoll = function(user_id, poll_question, poll_answers) {
+module.exports.createPoll = function(user_id, poll_question, poll_answers, callback) {
   var newEntry = {"creator_id": user_id, "question": poll_question, "answers": poll_answers, "voted":[]};
-  module.exports.addEntry = function(id, address, callback) {
-    MongoClient.connect(url, function (err, db) {
-      if (err) {
-        console.log('Unable to connect to the mongoDB server. Error:', err);
-      } else {
-        db.collection('polls').insert(newEntry).toArray( function (err, result) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log('Inserted documents into the "users" collection. The documents inserted with "_id" are:', result.length, result);
-            db.close();
-            callback(result);
-          }
-        });
-      }
-    });
-  };
+  MongoClient.connect(url, function (err, db) {
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    } else {
+      db.collection('polls').insertOne(newEntry, function (err, result) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log('Inserted documents into the "users" collection. The documents inserted with "_id" are:', result.length, result);
+          db.close();
+          callback(result);
+        }
+      });
+    }
+  });
 }
 
-module.exports.addPollOption = function(poll_id, new_answer_array) {
+module.exports.addPollOption = function(poll_id, new_answer_array, callback) {
   var filterclause = {'_id': poll_id};
   var updateclause = {'answers': new_answer_array};
   MongoClient.connect(url, function (err, db) {
@@ -96,7 +94,7 @@ module.exports.addPollOption = function(poll_id, new_answer_array) {
   });
 }
 
-module.exports.deletePoll = function(user_id, poll_id) {
+module.exports.deletePoll = function(user_id, poll_id, callback) {
   var filterclause = {'_id': poll_id, 'creator_id': user_id};
   MongoClient.connect(url, function (err, db) {
     if (err) {
@@ -115,7 +113,7 @@ module.exports.deletePoll = function(user_id, poll_id) {
   });
 }
 
-module.exports.votePoll = function(user_ip, poll_id, answer) {
+module.exports.votePoll = function(user_ip, poll_id, answer, callback) {
   var filterclause = {'_id': poll_id};
   MongoClient.connect(url, function (err, db) {
     if (err) {

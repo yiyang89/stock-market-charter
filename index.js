@@ -49,16 +49,15 @@ passport.deserializeUser(function(user, done) {
 
 // views is directory for all template files
 app.get('/', function(request, response) {
-  response.sendFile(path.join(__dirname+'/views/pages/index.html'));
+  response.sendFile(path.join(__dirname+'/views/pages/index2.html'));
 });
 
 // Request to backend for initial polls.
 app.get('/api/getpolls', function(request, response) {
   // Query mongodb for all polls and return.
   mongowrap.getPolls(function(result) {
-    console.log(result);
+    response.send(result);
   });
-  response.send('Got polls');
 });
 
 // Request to backend for my polls
@@ -67,9 +66,15 @@ app.get('/api/getpolls/:USER_ID', function(request, response) {
 });
 
 // Request to backend for poll creation (pollanswers as an array)
-app.get('/api/createpoll/:POLL_PARAMS', function(request, response) {
+app.get('/api/createpoll/', function(request, response) {
   // Insert new poll into mongodb
   // Return success or fail to user
+  // Create a poll for me to play with.
+  console.log("making call to mongowrap to create new poll");
+  mongowrap.createPoll("bob2", "what is a new", ['a person', 'a haircut', 'a cat'], function (result) {
+    console.log(result);
+    response.send("i don't know what a bob is lol");
+  });
 });
 
 // Request to backend for poll modification

@@ -54,7 +54,7 @@ body {
 .loginbtn {
   margin: 0;
 }
-#renderBox {
+#listBox {
   display: block;
   height: 100%;
   width: 100%;
@@ -63,13 +63,15 @@ body {
 .pollBox {
   display: inline-block;
   height: 100px;
-  width: 30%;
+  width: 260px;
   margin: 5px;
   background-color: white;
   border-style: solid;
   border-color: #2196f3;
   border-width: 1px;
   border-left-width: 10px;
+  color: black;
+  word-wrap:break-word;
 }
 .pollBox:hover {
   border-color: #1565c0;

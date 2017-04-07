@@ -9,27 +9,70 @@ var user = null;
 console.log("voting.js loaded successfully");
 
 
-// Import React classes
+// React classes
+var AppComponent = React.createClass({
+  render: function() {
+    return (<div className="jumbotron container">
+      <div className="header">
+        <div className="title">
+          Voting App
+        </div>
+        <LoginArea />
+      </div>
+      <CreateNew />
+      <CreateNewArea />
+      <AddOptionArea />
+      <PollDetailsArea />
+      <ListArea />
+      </div>);
+  }
+});
 var LoginArea = React.createClass({
   render: function() {
     // Return either a button or a welcome message based on global being set.
     if (user) {
       return <p> Welcome [USERNAME GOES HERE]! </p>;
     } else {
-      return (<button onClick={processLogin} id="loginButton" className="btn btn-primary waves-effect waves-light loginbtn">Google Login</button>);
+      return (<div className="login">
+      <button onClick={processLogin} id="loginButton" className="btn btn-primary waves-effect waves-light loginbtn">
+      Google Login
+      </button>
+      </div>);
     }
   }
 });
+var CreateNew = React.createClass({
+  render: function() {
+    return (<div className="createNew">Create New</div>);
+  }
+})
 var ListArea = React.createClass({
   getInitialState: function() {
     return {list: []};
   },
+  componentDidMount: function() {
+    // Get poll list from server
+    this.serverRequest = $.getJSON('/api/getpolls', function (result) {
+      this.setState({
+        list: {result}
+      });
+    }.bind(this));
+    // $.getJSON('/api/getpolls/', function(result) {
+    //   this.setState({list: result});
+    // })
+  },
   render: function() {
     // Return either a button or a welcome message based on global being set.
+    var output;
+    if (this.state.list.result) {
+      output = this.state.list.result.map(function(data, i) {
+          return <div className='pollBox' key={i}>{JSON.stringify(data)}</div>;
+      })
+    } else {
+      output = '';
+    }
     return (<div>
-      {this.state.list.map(function(data, i) {
-          return <div className='pollBox'>{JSON.stringify(data)}</div>;
-      })}
+      {output}
       </div>)
   }
 });
@@ -39,6 +82,7 @@ var CreateNewArea = React.createClass({
     // (Hidden until create new is clicked, animate dropdown style?)
     // Box should contain a form for creating a new poll
     // Question + 2 answers
+    return null;
   }
 })
 var AddOptionArea = React.createClass({
@@ -46,6 +90,7 @@ var AddOptionArea = React.createClass({
     // Div should be positioned above the list area
     // (Hidden until create new is clicked, animate dropdown style?)
     // Box should contain a form for adding a new option, and display existing options
+    return null;
   }
 })
 var PollDetailsArea = React.createClass({
@@ -53,19 +98,14 @@ var PollDetailsArea = React.createClass({
     // Div should be positioned above the list area
     // (Hidden until create new is clicked, animate dropdown style?)
     // Box should contain a form for voting on a poll, and display existing poll stats
+    return null;
   }
 })
 
-// TODO: LEARN HOW THE REACT LIFECYCLE WORKS SO ANY RENDERED COMPONENTS WILL AUTO UPDATE
-// Render the default login area
-ReactDOM.render(<LoginArea />,document.getElementById('login'));
-var listArea = <ListArea />
+// Render app
+ReactDOM.render(<AppComponent/>, document.getElementById('votingApp'));
 
-// Get poll list from server and render polls.
-$.getJSON('/api/getpolls/', function(result) {
-  // Render the poll list area
-  ReactDOM.render(<ListArea list={result}/>, document.getElementById('listBox'));
-})
+
 
 // Request to backend for login
 function someMethod(response) {
