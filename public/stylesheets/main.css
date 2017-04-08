@@ -61,9 +61,11 @@ body {
   color: black;
 }
 .boxContent {
-  padding-top: 10%;
   width: 100%;
   transition: 0.3s;
+}
+.head {
+  padding-top: 10%;
 }
 .paddedText {
   text-align: left;
@@ -76,8 +78,6 @@ body {
 .title {
   padding: 15px;
   font-size: 25px;
-  background-color: #00bcd4;
-  border: none;
 }
 .login {
   /*float: right;*/
@@ -85,6 +85,9 @@ body {
 }
 .loginbtn {
   margin: 0;
+}
+.voteButton {
+  width: 70% !important;
 }
 .pollBox {
   display: inline-block;

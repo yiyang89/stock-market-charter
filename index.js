@@ -85,24 +85,37 @@ app.get('/api/createpoll/', function(request, response) {
 // Request to backend for poll modification
 app.get('/api/addpolloption/:POLL_PARAMS', function(request, response) {
   // Get poll id and new answer option from POLL_PARAMS
-  // Modify the entry in mongodb
-  // Return success or fail to user
-});
+  // Implicit vote!
+})
+
+// Request to backend to vote
+app.get('/api/votepoll', function(request, response) {
+  console.log(request.query);
+  var ip = request.headers['x-forwarded-for'] ||
+     request.connection.remoteAddress ||
+     request.socket.remoteAddress ||
+     request.connection.socket.remoteAddress;
+  console.log(ip);
+  mongowrap.votePoll(ip, request.query.id, request.query.answer, request.query.userid, function(err, data) {
+    if (err) {
+      console.log("Mongo vote error: " + err);
+      response.send({"ERROR:":err});
+    } else {
+      response.send({"message":"Successfully voted on this poll"});
+    }
+  });
+  // Wrap to mongo with ip, question id, and answer
+  // (How to disable multiple votes?)
+  // -> Monkey patch: read the user's ip to disable multiple votes
+  // Mongowrap call to vote.
+})
 
 // Request to backend for poll deletion
-app.get('/api/deletepoll/:POLL_PARAMS', function(request, response) {
+app.get('/api/deletepoll', function(request, response) {
   //  Get userid and pollid from POLL_PARAMS
   //  Query mongodb for userid match
   //  If match -> mongodb delete and return success
   //  Else return failure
-})
-
-// Request to backend to vote
-app.get('/api/votepoll/:POLL_PARAMS', function(request, response) {
-  // (How to disable multiple votes?)
-  // -> Monkey patch: read the user's ip to disable multiple votes
-  // Must check if poll even exists anymore (user may be voting on a deleted poll)
-  // Return success or fail to user.
 })
 
 // auth code from https://c9.io/barberboy/passport-google-oauth2-example

@@ -35,6 +35,18 @@ var AppComponent = React.createClass({
       showPollDetails: false
     });
   },
+  handleVoteClick: function(questionId, option) {
+    // Request to server to add a vote
+    var username = user? user.name : '';
+    var params = "id=" + questionId + "&answer=" + encodeURI(option) + "&userid=" + username;
+    console.log("Sending params: " + params);
+    this.serverRequest = $.getJSON('/api/votepoll?'+params, function (result) {
+      // On vote success: show confirmation?
+      // On vote failure: You have already voted on this poll
+      console.log(result);
+    });
+    // this.setState({showCreateNew: false});
+  },
   handleSubmitNewClick: function(question, answer1, answer2) {
     // submit the state question, answer1 and answer2 to the server.
     // Implement a check for EMPTY question, answer1, or answer2
@@ -55,6 +67,13 @@ var AppComponent = React.createClass({
       showPollDetails: true
     })
   },
+  handleDeleteClick: function(pollObject) {
+    this.serverRequest = $.getJSON('/api/createpoll?'+params, function (result) {
+      this.setState({
+        list: {result}
+      });
+    });
+  },
   render: function() {
     return (<div className="jumbotron container">
       <div className="header">
@@ -66,7 +85,7 @@ var AppComponent = React.createClass({
       <CreateNew onClick={this.handleCreateNewClick}/>
       {this.state.showList? <ListArea onClick={this.handleSelectPoll}/> : <div/>}
       {this.state.showCreateNew && !this.state.showList?<CreateNewArea displayfunc={this.handleSubmitNewClick}/> : <div/>}
-      {this.state.showPollDetails && !this.state.showList?<PollDetailsArea content={this.state.pollTarget}/> : <div/>}
+      {this.state.showPollDetails && !this.state.showList?<PollDetailsArea content={this.state.pollTarget} voteClick={this.handleVoteClick} deleteClick={this.handleDeleteClick}/> : <div/>}
       </div>);
   }
 });
@@ -107,7 +126,7 @@ var ListArea = React.createClass({
     var output;
     if (this.state.list.result) {
       output = this.state.list.result.map(function(data, i) {
-          return <div className='pollBox' key={i} onClick={this.props.onClick.bind(null, data)}>{JSON.stringify(data)}</div>;
+          return <div className='pollBox' key={i} onClick={this.props.onClick.bind(null, data)}><h5>{data.question}</h5></div>;
       }, this)
     } else {
       output = '';
@@ -142,7 +161,7 @@ var CreateNewArea = React.createClass({
     // Question + 2 answers with preview
     // TODO: PREVIEW
     return (<div className="contentBox">
-              <div className="boxContent grid-by-rows">
+              <div className="boxContent grid-by-rows head">
                 <input className="inputBox" type="text" placeholder="Enter a question" value={this.state.question} onChange={this.handleChangeQuestion} />
                 <br/>
                 <input className="inputBox" type="text" placeholder="Enter an answer" value={this.state.answer1} onChange={this.handleChangeAnswer1} />
@@ -153,26 +172,37 @@ var CreateNewArea = React.createClass({
               </div>
               <h2 className="paddedText" >Preview:</h2>
               <h4 className="paddedText" >{this.state.question}</h4>
-              <h4 className="paddedText" >{this.state.answer1} </h4>
-              <h4 className="paddedText" >{this.state.answer2} </h4>
+              <div className="boxContent grid-by-rows">
+                {this.state.answer1===''? null : <button className="btn btn-info btn-wide">{this.state.answer1}</button>}
+                {this.state.answer2===''? null: <button className="btn btn-info btn-wide">{this.state.answer2}</button>}
+              </div>
           </div>);
   }
 })
-var AddOptionArea = React.createClass({
-  render: function() {
-    // Div should be positioned above the list area
-    // (Hidden until create new is clicked, animate dropdown style?)
-    // Box should contain a form for adding a new option, and display existing options
-    return null;
-  }
-})
 var PollDetailsArea = React.createClass({
+  // Poll details receives props.content, props.voteClick(option), and props.newOption(option) on construction
+  getInitialState: function() {
+    return {
+      customOption: null
+    }
+  },
+  handleChangeCustom: function(event) {
+    this.setState({customOption: event.target.value})
+  },
   render: function() {
-    // Div should be positioned above the list area
-    // (Hidden until create new is clicked, animate dropdown style?)
     // Box should contain a form for voting on a poll, and display existing poll stats
-    // return null;
-    return <div className="contentBox">{JSON.stringify(this.props.content)}</div>;
+    var output = this.props.content.answers.map(function(data, i) {
+      return <button className="btn btn-info btn-wide" key={i} onClick={this.props.voteClick.bind(null, this.props.content._id, data)}>{data}</button>
+    }, this);
+    return (<div className="contentBox">
+              <h2 className="paddedText head" >{this.props.content.question}</h2>
+              <div className="boxContent grid-by-rows">
+              {output}
+              <input className="inputBox" type="text" placeholder="Don't like these options? Add your own!" onChange={this.handleChangeCustom}/>
+              {this.state.customOption?<button className="btn btn-info btn-wide" onClick={this.props.voteClick.bind(null, this.props.content._id, this.state.customOption)}>{this.state.customOption}</button> : <div/>}
+              <button className="btn btn-danger btn-wide" onClick={this.props.deleteClick.bind(null, this.props.content._id)}>Delete this poll</button>
+              </div>
+            </div>)
   }
 })
 
@@ -193,26 +223,9 @@ function processLogin() {
   });
 }
 
-// Request to backend for poll creation (pollanswers as an array)
-function createPoll(poll_question, poll_answers) {
-// Receive a success or fail from the server.
-// If success, add to the rendered list
-// If fail, notify user
-}
-
-// Request to backend to add a poll answer option
-function addPollOption(poll_id, new_answer) {
-
-}
-
 // Request to backend for poll deletion
 function deletePoll(poll_id) {
   // Bundle user's id the request
-}
-
-// Request to backend to vote
-function votePoll(poll_id, poll_answer) {
-
 }
 
 // Render app
