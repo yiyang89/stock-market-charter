@@ -12,12 +12,19 @@ console.log("voting.js loaded successfully");
 // React classes
 var AppComponent = React.createClass({
   getInitialState: function() {
-    return {showCreateNew: false};
+    return {
+      showList: true,
+      pollTarget: {},
+      showCreateNew: false
+    };
   },
   handleCreateNewClick: function() {
     var newState = this.state.showCreateNew ? false : true;
     console.log(newState);
-    this.setState({showCreateNew: newState});
+    this.setState({
+      showList: !newState,
+      showCreateNew: newState
+    });
   },
   handleSubmitNewClick: function(question, answer1, answer2) {
     // submit the state question, answer1 and answer2 to the server.
@@ -31,6 +38,11 @@ var AppComponent = React.createClass({
     });
     this.setState({showCreateNew: false});
   },
+  handleSelectPoll: function(pollObject) {
+    this.setState({
+      pollTarget: pollObject
+    })
+  },
   render: function() {
     return (<div className="jumbotron container">
       <div className="header">
@@ -40,11 +52,7 @@ var AppComponent = React.createClass({
         <LoginArea />
       </div>
       <CreateNew onClick={this.handleCreateNewClick}/>
-      {this.state.showCreateNew? <CreateNewArea displayfunc={this.handleSubmitNewClick}/> :
-        <div><AddOptionArea />
-        <PollDetailsArea />
-        <ListArea /></div> }
-
+      {this.state.showList? <ListArea onClick={this.handleSelectPoll}/> : <CreateNewArea displayfunc={this.handleSubmitNewClick}/> }
       </div>);
   }
 });
@@ -85,8 +93,8 @@ var ListArea = React.createClass({
     var output;
     if (this.state.list.result) {
       output = this.state.list.result.map(function(data, i) {
-          return <div className='pollBox' key={i}>{JSON.stringify(data)}</div>;
-      })
+          return <div className='pollBox' key={i} onClick={this.props.onClick(data)}>{JSON.stringify(data)}</div>;
+      }, this)
     } else {
       output = '';
     }

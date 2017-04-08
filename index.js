@@ -55,7 +55,7 @@ app.get('/', function(request, response) {
 // Request to backend for initial polls.
 app.get('/api/getpolls', function(request, response) {
   // Query mongodb for all polls and return.
-  mongowrap.getPolls(function(result) {
+  mongowrap.getPolls(function(err, result) {
     response.send(result);
   });
 });
