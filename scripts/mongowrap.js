@@ -27,7 +27,7 @@ module.exports.getPolls = function(callback) {
           console.log(err);
         } else {
           // If no results found, redirect to a page notifying user
-          console.log("mongodb getPolls success: " + result);
+          console.log("mongodb getPolls success: ");
           db.close();
           callback(err, result);
         }
@@ -94,17 +94,17 @@ module.exports.addPollOption = function(poll_id, new_answer_array, callback) {
   });
 }
 
-module.exports.deletePoll = function(user_id, poll_id, callback) {
-  var filterclause = {'_id': poll_id, 'creator_id': user_id};
+module.exports.deletePoll = function(poll_id, user_id, callback) {
+  var filterclause = {'_id': mongodb.ObjectId(poll_id), 'creator_id': user_id};
   MongoClient.connect(url, function (err, db) {
     if (err) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
     } else {
-      db.collection('polls').remove(filterclause).toArray( function (err, result) {
+      db.collection('polls').findOneAndDelete(filterclause, function (err, result) {
         if (err) {
           console.log(err);
         } else {
-          console.log("mongodb removeQuery success: " + result);
+          console.log("mongodb removeQuery success: " + JSON.stringify(result));
           db.close();
           callback(err, result);
         }

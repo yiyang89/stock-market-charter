@@ -49,7 +49,7 @@ passport.deserializeUser(function(user, done) {
 
 // views is directory for all template files
 app.get('/', function(request, response) {
-  response.sendFile(path.join(__dirname+'/views/pages/index2.html'));
+  response.sendFile(path.join(__dirname+'/views/pages/index.html'));
 });
 
 // Request to backend for initial polls.
@@ -82,12 +82,6 @@ app.get('/api/createpoll/', function(request, response) {
   });
 });
 
-// Request to backend for poll modification
-app.get('/api/addpolloption/:POLL_PARAMS', function(request, response) {
-  // Get poll id and new answer option from POLL_PARAMS
-  // Implicit vote!
-})
-
 // Request to backend to vote
 app.get('/api/votepoll', function(request, response) {
   console.log(request.query);
@@ -104,18 +98,24 @@ app.get('/api/votepoll', function(request, response) {
       response.send({"message":"Successfully voted on this poll"});
     }
   });
-  // Wrap to mongo with ip, question id, and answer
-  // (How to disable multiple votes?)
-  // -> Monkey patch: read the user's ip to disable multiple votes
-  // Mongowrap call to vote.
 })
 
 // Request to backend for poll deletion
 app.get('/api/deletepoll', function(request, response) {
   //  Get userid and pollid from POLL_PARAMS
-  //  Query mongodb for userid match
-  //  If match -> mongodb delete and return success
-  //  Else return failure
+  mongowrap.deletePoll(request.query.id, request.query.userid, function(err, data) {
+    if (err) {
+      console.log("Mongo delete error: " + err);
+      response.send({"ERROR":err});
+    } else {
+      if (data.value) {
+        console.log("User " + request.query.userid + " has deleted poll #" + request.query.id);
+        response.send({"message":"Successfully deleted question ID #" + request.query.id});
+      } else {
+        response.send({"ERROR":"Poll does not belong to you"});
+      }
+    }
+  })
 })
 
 // auth code from https://c9.io/barberboy/passport-google-oauth2-example
