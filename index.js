@@ -15,6 +15,7 @@ var GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 var AUTHHOST = process.env.AUTH_HOST;
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
@@ -120,6 +121,10 @@ app.get('/api/deletepoll', function(request, response) {
   })
 })
 
+app.get('/api/login', function(request, response) {
+  response.redirect('/auth/google');
+})
+
 // auth code from https://c9.io/barberboy/passport-google-oauth2-example
 // send auth request to google
 app.get('/auth/google', passport.authenticate('google', { scope: ['email profile'] }
@@ -132,7 +137,8 @@ function(request, response) {
   console.log("finished authentication");
   if (request.user) {
     response.set({'Content-Type':'application/json'});
-    response.send('someMethod' + '('+ JSON.stringify(request.user) + ');');
+    // response.send('someMethod' + '('+ JSON.stringify(request.user) + ');');
+    response.redirect('/');
   } else { response.jsonp(401); }
 });
 

@@ -89,6 +89,11 @@ var AppComponent = React.createClass({
       });
     }.bind(this));
   },
+  handleLogin: function() {
+    this.serverRequest = $.getJSON(host+'/api/login', function (result) {
+      console.log(result);
+    })
+  },
   showMyPolls: function() {
     console.log("Theres nothing here yet!");
     this.hideAll();
@@ -100,7 +105,7 @@ var AppComponent = React.createClass({
     var username = user? user.name : '';
     return (<div className="jumbotron container">
       <div className="header">
-        <LoginArea />
+        <LoginArea loginHandler={this.handleLogin}/>
         <button onClick={this.returnToHomeView} className="btn btn-primary waves-effect waves-light loginbtn">
           Home
         </button>

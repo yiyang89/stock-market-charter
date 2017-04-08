@@ -5,9 +5,9 @@ var LoginArea = React.createClass({
       return <p> Welcome [USERNAME GOES HERE]! </p>;
     } else {
       return (<div className="login">
-      <button onClick={processLogin} id="loginButton" className="btn btn-primary waves-effect waves-light">
+      <a href="/auth/google/" id="loginButton" className="btn btn-primary waves-effect waves-light">
       Google+
-      </button>
+      </a>
       </div>);
     }
   }
