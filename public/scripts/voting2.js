@@ -15,15 +15,24 @@ var AppComponent = React.createClass({
     return {
       showList: true,
       pollTarget: {},
-      showCreateNew: false
+      showCreateNew: false,
+      showPollDetails: false
     };
+  },
+  returnToHomeView: function() {
+    this.setState({
+      showList: true,
+      showCreateNew: false,
+      showPollDetails: false
+    })
   },
   handleCreateNewClick: function() {
     var newState = this.state.showCreateNew ? false : true;
     console.log(newState);
     this.setState({
       showList: !newState,
-      showCreateNew: newState
+      showCreateNew: newState,
+      showPollDetails: false
     });
   },
   handleSubmitNewClick: function(question, answer1, answer2) {
@@ -39,20 +48,25 @@ var AppComponent = React.createClass({
     this.setState({showCreateNew: false});
   },
   handleSelectPoll: function(pollObject) {
+    console.log(JSON.stringify(pollObject));
     this.setState({
-      pollTarget: pollObject
+      pollTarget: pollObject,
+      showList: false,
+      showPollDetails: true
     })
   },
   render: function() {
     return (<div className="jumbotron container">
       <div className="header">
-        <div className="title">
-          Voting App
-        </div>
+        <button onClick={this.returnToHomeView} className="btn btn-primary waves-effect waves-light loginbtn">
+          Home
+        </button>
         <LoginArea />
       </div>
       <CreateNew onClick={this.handleCreateNewClick}/>
-      {this.state.showList? <ListArea onClick={this.handleSelectPoll}/> : <CreateNewArea displayfunc={this.handleSubmitNewClick}/> }
+      {this.state.showList? <ListArea onClick={this.handleSelectPoll}/> : <div/>}
+      {this.state.showCreateNew && !this.state.showList?<CreateNewArea displayfunc={this.handleSubmitNewClick}/> : <div/>}
+      {this.state.showPollDetails && !this.state.showList?<PollDetailsArea content={this.state.pollTarget}/> : <div/>}
       </div>);
   }
 });
@@ -93,7 +107,7 @@ var ListArea = React.createClass({
     var output;
     if (this.state.list.result) {
       output = this.state.list.result.map(function(data, i) {
-          return <div className='pollBox' key={i} onClick={this.props.onClick(data)}>{JSON.stringify(data)}</div>;
+          return <div className='pollBox' key={i} onClick={this.props.onClick.bind(null, data)}>{JSON.stringify(data)}</div>;
       }, this)
     } else {
       output = '';
@@ -157,7 +171,8 @@ var PollDetailsArea = React.createClass({
     // Div should be positioned above the list area
     // (Hidden until create new is clicked, animate dropdown style?)
     // Box should contain a form for voting on a poll, and display existing poll stats
-    return null;
+    // return null;
+    return <div className="contentBox">{JSON.stringify(this.props.content)}</div>;
   }
 })
 

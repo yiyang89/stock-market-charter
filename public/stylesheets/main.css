@@ -76,6 +76,8 @@ body {
 .title {
   padding: 15px;
   font-size: 25px;
+  background-color: #00bcd4;
+  border: none;
 }
 .login {
   /*float: right;*/

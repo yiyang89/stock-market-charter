@@ -9,36 +9,130 @@ var user = null;
 console.log("voting.js loaded successfully");
 
 
-// Import React classes
+// React classes
+var AppComponent = React.createClass({
+  getInitialState: function() {
+    return {
+      showList: true,
+      pollTarget: {},
+      showCreateNew: false,
+      list: []
+    };
+  },
+  componentDidMount: function() {
+    // Get poll list from server
+    this.serverRequest = $.getJSON('/api/getpolls', function (result) {
+      this.setState({
+        list: {result}
+      });
+    }.bind(this));
+  },
+  handleCreateNewClick: function() {
+    var newState = this.state.showCreateNew ? false : true;
+    console.log(newState);
+    this.setState({
+      showList: !newState,
+      showCreateNew: newState
+    });
+  },
+  handleSubmitNewClick: function(question, answer1, answer2) {
+    // submit the state question, answer1 and answer2 to the server.
+    // Implement a check for EMPTY question, answer1, or answer2
+    var username = user? user.name : '';
+    var params = "question=" + question + "&answer1=" + answer1 + "&answer2=" + answer2 + "&userid=" + username;
+    this.serverRequest = $.getJSON('/api/createpoll?'+params, function (result) {
+      this.setState({
+        list: {result}
+      });
+    });
+    this.setState({showCreateNew: false});
+  },
+  handleSelectPoll: function(pollObject) {
+    // this.setState({
+    //   pollTarget: pollObject
+    // })
+  },
+  generateList: function() {
+    var output;
+    if (this.state.list.result) {
+      output = this.state.list.result.map(function(data, i) {
+        return <div className='pollBox' key={i} onClick={this.handleSelectPoll(data)}>{JSON.stringify(data)}</div>;
+      }, this);
+    } else {output = <div/>;}
+    return (<div>{output}</div>);
+  },
+  render: function() {
+    return (<div className="jumbotron container">
+    <div className="header">
+    <div className="title">
+    Voting App
+    </div>
+    <LoginArea />
+    </div>
+    <CreateNew onClick={this.handleCreateNewClick}/>
+    {this.state.showList? (this.generateList()) : <CreateNewArea displayfunc={this.handleSubmitNewClick}/> }
+    </div>);
+  }
+});
 var LoginArea = React.createClass({
   render: function() {
     // Return either a button or a welcome message based on global being set.
     if (user) {
       return <p> Welcome [USERNAME GOES HERE]! </p>;
     } else {
-      return (<button onClick={processLogin} id="loginButton" className="btn btn-primary waves-effect waves-light loginbtn">Google Login</button>);
+      return (<div className="login">
+      <button onClick={processLogin} id="loginButton" className="btn btn-primary waves-effect waves-light loginbtn">
+      Google Login
+      </button>
+      </div>);
     }
   }
 });
-var ListArea = React.createClass({
+var CreateNew = React.createClass({
+  render: function() {
+    // Has inherited an onclick prop from its parent on creation
+    return (<div className="createNew" onClick={this.props.onClick}>Create New</div>);
+  }
+})
+var CreateNewArea = React.createClass({
+  handleClick: function(event) {
+    if (this.state.question !== '' && this.state.answer1 !== '' && this.state.answer2 !== '') {
+      this.props.displayfunc(this.state.question, this.state.answer1, this.state.answer2);
+    } else {
+      alert('Please fill out all fields');
+    }
+  },
+  handleChangeQuestion: function(event) {
+    this.setState({question: event.target.value});
+  },
+  handleChangeAnswer1: function(event) {
+    this.setState({answer1: event.target.value});
+  },
+  handleChangeAnswer2: function(event) {
+    this.setState({answer2: event.target.value});
+  },
   getInitialState: function() {
-    return {list: []};
+    return {question: '', answer1: '', answer2:''};
   },
   render: function() {
-    // Return either a button or a welcome message based on global being set.
-    return (<div>
-      {this.state.list.map(function(data, i) {
-          return <div className='pollBox'>{JSON.stringify(data)}</div>;
-      })}
-      </div>)
-  }
-});
-var CreateNewArea = React.createClass({
-  render: function() {
-    // Div should be positioned above the list area
-    // (Hidden until create new is clicked, animate dropdown style?)
     // Box should contain a form for creating a new poll
-    // Question + 2 answers
+    // Question + 2 answers with preview
+    // TODO: PREVIEW
+    return (<div className="contentBox">
+    <div className="boxContent grid-by-rows">
+    <input className="inputBox" type="text" placeholder="Enter a question" value={this.state.question} onChange={this.handleChangeQuestion} />
+    <br/>
+    <input className="inputBox" type="text" placeholder="Enter an answer" value={this.state.answer1} onChange={this.handleChangeAnswer1} />
+    <br/>
+    <input className="inputBox" type="text" placeholder="Enter another answer" value={this.state.answer2} onChange={this.handleChangeAnswer2} />
+    <br/>
+    <button className="btn btn-info btn-wide" onClick={this.handleClick}>Create your poll!</button>
+    </div>
+    <h2 className="paddedText" >Preview:</h2>
+    <h4 className="paddedText" >{this.state.question}</h4>
+    <h4 className="paddedText" >{this.state.answer1} </h4>
+    <h4 className="paddedText" >{this.state.answer2} </h4>
+    </div>);
   }
 })
 var AddOptionArea = React.createClass({
@@ -46,6 +140,7 @@ var AddOptionArea = React.createClass({
     // Div should be positioned above the list area
     // (Hidden until create new is clicked, animate dropdown style?)
     // Box should contain a form for adding a new option, and display existing options
+    return null;
   }
 })
 var PollDetailsArea = React.createClass({
@@ -53,18 +148,8 @@ var PollDetailsArea = React.createClass({
     // Div should be positioned above the list area
     // (Hidden until create new is clicked, animate dropdown style?)
     // Box should contain a form for voting on a poll, and display existing poll stats
+    return null;
   }
-})
-
-// TODO: LEARN HOW THE REACT LIFECYCLE WORKS SO ANY RENDERED COMPONENTS WILL AUTO UPDATE
-// Render the default login area
-ReactDOM.render(<LoginArea />,document.getElementById('login'));
-var listArea = <ListArea />
-
-// Get poll list from server and render polls.
-$.getJSON('/api/getpolls/', function(result) {
-  // Render the poll list area
-  ReactDOM.render(<ListArea list={result}/>, document.getElementById('listBox'));
 })
 
 // Request to backend for login
@@ -84,19 +169,11 @@ function processLogin() {
   });
 }
 
-// Request to backend for initial polls.
-function getPolls() {
-  // When rendering, check for votes from this ip against the list
-  // -> Will show the user which polls they have voted on already
-  // Indicate with a green tint?
-
-}
-
 // Request to backend for poll creation (pollanswers as an array)
 function createPoll(poll_question, poll_answers) {
-// Receive a success or fail from the server.
-// If success, add to the rendered list
-// If fail, notify user
+  // Receive a success or fail from the server.
+  // If success, add to the rendered list
+  // If fail, notify user
 }
 
 // Request to backend to add a poll answer option
@@ -113,3 +190,6 @@ function deletePoll(poll_id) {
 function votePoll(poll_id, poll_answer) {
 
 }
+
+// Render app
+ReactDOM.render(<AppComponent/>, document.getElementById('votingApp'));
