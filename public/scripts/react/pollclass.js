@@ -28,7 +28,11 @@ var PollDetailsArea = React.createClass({
 })
 
 var GoogleDonut = React.createClass({
-  render: function() {
+  componentDidMount: function() {
+    google.charts.load("visualization", "1", {packages:["corechart"]});
+    google.charts.setOnLoadCallback(this.drawCharts);
+  },
+  drawCharts: function() {
     // Process the voted array.
     var stepOneArray = [];
     this.props.data.forEach(function (entry) {
@@ -49,33 +53,27 @@ var GoogleDonut = React.createClass({
     Object.keys(counts).forEach(function(key) {
       processedData.push([key, counts[key]]);
     });
-    console.log(JSON.stringify(processedData));
-    google.charts.load('current',{'packages':['corechart']});
-    google.charts.setOnLoadCallback(drawChart.bind(this));
-    function drawChart() {
-      // Create the data table.
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Topping');
-      data.addColumn('number', 'Slices');
-      data.addRows(
-        processedData
-        // [
-        // ['Mushrooms', 3],
-        // ['Onions', 1],
-        // ['Olives', 1],
-        // ['Zucchini', 1],
-        // ['Pepperoni', 2]]
-      );
+    // Create the data table.
+    // data.addColumn('string', 'Topping');
+    console.log(JSON.stringify(google));
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Option');
+    data.addColumn('number', 'Votes');
+    data.addRows(
+      processedData
+    );
 
-      // Set chart options
-      var options = {
+    // Set chart options
+    var options = {
       'width':400,
       'height':300};
 
       // Instantiate and draw our chart, passing in some options.
       var chart = new google.visualization.PieChart(document.getElementById(this.props.target));
       chart.draw(data, options);
-    };
-    return null;
-  }
-})
+    },
+    render: function() {
+      // google.charts.setOnLoadCallback(drawChart.bind(this));
+      return null;
+    }
+  })
