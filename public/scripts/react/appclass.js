@@ -5,7 +5,6 @@ var user = null;
 
 console.log("voting.js loaded successfully");
 
-
 // React classes
 var AppComponent = React.createClass({
   getInitialState: function() {
@@ -13,23 +12,33 @@ var AppComponent = React.createClass({
       showList: true,
       pollTarget: {},
       showCreateNew: false,
-      showPollDetails: false
+      showPollDetails: false,
+      globalList: []
     };
   },
+  hideAll: function() {
+    this.setState({
+      showList: false,
+      showCreateNew: false,
+      showPollDetails: false,
+      showMyPolls: false
+    })
+  },
+  setGlobalList: function(result) {
+    this.setState({
+      globalList: {result}
+    })
+  },
   returnToHomeView: function() {
+    this.hideAll();
     this.setState({
       showList: true,
-      showCreateNew: false,
-      showPollDetails: false
     })
   },
   handleCreateNewClick: function() {
-    var newState = this.state.showCreateNew ? false : true;
-    console.log(newState);
+    this.hideAll();
     this.setState({
-      showList: !newState,
-      showCreateNew: newState,
-      showPollDetails: false
+      showCreateNew: true
     });
   },
   handleVoteClick: function(questionId, option) {
@@ -63,9 +72,9 @@ var AppComponent = React.createClass({
   },
   handleSelectPoll: function(pollObject) {
     console.log(JSON.stringify(pollObject));
+    this.hideAll();
     this.setState({
       pollTarget: pollObject,
-      showList: false,
       showPollDetails: true
     })
   },
@@ -74,24 +83,36 @@ var AppComponent = React.createClass({
     var params = "id=" + questionId + "&userid=" + username;
     this.serverRequest = $.getJSON('/api/deletepoll?'+params, function (result) {
       console.log(result);
+      this.hideAll();
       this.setState({
-        showPollDetails: false,
         showList: true
       });
     }.bind(this));
   },
+  showMyPolls: function() {
+    console.log("Theres nothing here yet!");
+    this.hideAll();
+    this.setState({
+      showMyPolls: true
+    })
+  },
   render: function() {
+    var username = user? user.name : '';
     return (<div className="jumbotron container">
       <div className="header">
+        <LoginArea />
         <button onClick={this.returnToHomeView} className="btn btn-primary waves-effect waves-light loginbtn">
           Home
         </button>
-        <LoginArea />
+        <button onClick={this.showMyPolls} className="btn btn-primary waves-effect waves-light mypollsbtn">
+          My Polls
+        </button>
       </div>
       <CreateNew onClick={this.handleCreateNewClick}/>
-      {this.state.showList? <ListArea onClick={this.handleSelectPoll}/> : null}
+      {this.state.showList? <ListArea onClick={this.handleSelectPoll} setGlobalList={this.setGlobalList}/> : null}
       {this.state.showCreateNew && !this.state.showList?<CreateNewArea displayfunc={this.handleSubmitNewClick}/> : null}
       {this.state.showPollDetails && !this.state.showList?<PollDetailsArea content={this.state.pollTarget} voteClick={this.handleVoteClick} deleteClick={this.handleDeleteClick}/> : null}
+      {this.state.showMyPolls && !this.state.showList?<MyPolls user={username} globalList={this.state.globalList} selectPoll={this.handleSelectPoll}/>:null}
       </div>);
   }
 });

@@ -8,6 +8,7 @@ var ListArea = React.createClass({
       this.setState({
         list: {result}
       });
+      this.props.setGlobalList(result);
     }.bind(this));
   },
   render: function() {

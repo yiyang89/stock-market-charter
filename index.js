@@ -56,6 +56,8 @@ app.get('/', function(request, response) {
 app.get('/api/getpolls', function(request, response) {
   // Query mongodb for all polls and return.
   mongowrap.getPolls(function(err, result) {
+    // Flip before returning so latest shows first.
+    result = result.reverse();
     response.send(result);
   });
 });
