@@ -1,6 +1,3 @@
-// Front end rendering and logic
-// Use React and jQuery
-
 // Globals:
 var host = "http://192.168.0.53:5000";
 // var host = "http://voting-app-decky.herokuapp.com";
@@ -47,11 +44,16 @@ var AppComponent = React.createClass({
     });
     // this.setState({showCreateNew: false});
   },
-  handleSubmitNewClick: function(question, answer1, answer2) {
+  handleSubmitNewClick: function(question, answers) {
     // submit question, answer1 and answer2 to the server.
     // Implement a check for EMPTY question, answer1, or answer2
+    console.log(answers);
     var username = user? user.name : '';
-    var params = "question=" + question + "&answer1=" + answer1 + "&answer2=" + answer2 + "&userid=" + username;
+    var answerParam = '';
+    answers.forEach(function(answer) {
+      answerParam = answerParam.concat("&answer="+answer);
+    });
+    var params = "question=" + question + answerParam + "&userid=" + username;
     this.serverRequest = $.getJSON('/api/createpoll?'+params, function (result) {
       this.setState({
         list: {result}
@@ -87,31 +89,9 @@ var AppComponent = React.createClass({
         <LoginArea />
       </div>
       <CreateNew onClick={this.handleCreateNewClick}/>
-      {this.state.showList? <ListArea onClick={this.handleSelectPoll}/> : <div/>}
-      {this.state.showCreateNew && !this.state.showList?<CreateNewArea displayfunc={this.handleSubmitNewClick}/> : <div/>}
-      {this.state.showPollDetails && !this.state.showList?<PollDetailsArea content={this.state.pollTarget} voteClick={this.handleVoteClick} deleteClick={this.handleDeleteClick}/> : <div/>}
+      {this.state.showList? <ListArea onClick={this.handleSelectPoll}/> : null}
+      {this.state.showCreateNew && !this.state.showList?<CreateNewArea displayfunc={this.handleSubmitNewClick}/> : null}
+      {this.state.showPollDetails && !this.state.showList?<PollDetailsArea content={this.state.pollTarget} voteClick={this.handleVoteClick} deleteClick={this.handleDeleteClick}/> : null}
       </div>);
   }
 });
-
-
-
-// Request to backend for login
-function someMethod(response) {
-  console.log(response);
-}
-
-function processLogin() {
-  $.ajax({
-    url: host+'/auth/google?callback=?',
-    dataType: 'jsonp',
-    jsonp: 'callback',
-    success: function(data) {
-      console.log('success');
-      console.log(JSON.stringify(data));
-    }
-  });
-}
-
-// Render app
-ReactDOM.render(<AppComponent/>, document.getElementById('votingApp'));
