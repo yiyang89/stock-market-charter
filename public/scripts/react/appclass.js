@@ -1,8 +1,3 @@
-// Globals:
-var host = "http://192.168.0.53:5000";
-// var host = "http://voting-app-decky.herokuapp.com";
-var user = null;
-
 console.log("voting.js loaded successfully");
 
 // React classes

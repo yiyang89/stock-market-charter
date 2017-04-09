@@ -20,6 +20,8 @@ app.use(function(req, res, next) {
   next();
 });
 app.set('port', (process.env.PORT || 5000));
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 
 passport.use(new GoogleStrategy({
@@ -50,7 +52,19 @@ passport.deserializeUser(function(user, done) {
 
 // views is directory for all template files
 app.get('/', function(request, response) {
-  response.sendFile(path.join(__dirname+'/views/pages/index.html'));
+  response.render('pages/index', {'user': null});
+});
+
+// views is directory for all template files
+app.get('/loggedin/:user', function(request, response) {
+  // response.sendFile(path.join(__dirname+'/views/pages/index.html'));
+  if (request.params.user) {
+    console.log("IN APP GET /loggedin");
+    console.log(request.params.user);
+    response.render('pages/index', {'user': request.params.user});
+  } else {
+    response.render('pages/index', {'user': null});
+  }
 });
 
 // Request to backend for initial polls.
@@ -61,11 +75,6 @@ app.get('/api/getpolls', function(request, response) {
     result = result.reverse();
     response.send(result);
   });
-});
-
-// Request to backend for my polls
-app.get('/api/getpolls/:USER_ID', function(request, response) {
-  // Query mongodb for polls by this USER_ID and return
 });
 
 // Request to backend for poll creation (pollanswers as an array)
@@ -136,9 +145,9 @@ passport.authenticate('google'),
 function(request, response) {
   console.log("finished authentication");
   if (request.user) {
-    response.set({'Content-Type':'application/json'});
-    // response.send('someMethod' + '('+ JSON.stringify(request.user) + ');');
-    response.redirect('/');
+    // response.set({'Content-Type':'application/json'});
+    // console.log(JSON.stringify(request.user));
+    response.redirect('/loggedin/'+JSON.stringify(request.user.emails[0].value));
   } else { response.jsonp(401); }
 });
 
