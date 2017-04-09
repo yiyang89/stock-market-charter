@@ -13,7 +13,7 @@ a {
   margin-top: 50px;
   /*height: 90vh;*/
   min-height: 90vh;
-  background-color: #212121 !important;
+  background-color: white;
   min-width:860px;
 }
 .Aligner {
@@ -44,6 +44,10 @@ a {
   display: flex;
   display: -webkit-flex;
   justify-content: space-between;
+}
+.userDisplay {
+  font-size: 32px;
+  padding-top: 5px;
 }
 .createNew {
   background-color: #80deea;

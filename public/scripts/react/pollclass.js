@@ -14,14 +14,16 @@ var PollDetailsArea = React.createClass({
     var output = this.props.content.answers.map(function(data, i) {
       return <button className="btn btn-info btn-wide" key={i} onClick={this.props.voteClick.bind(null, this.props.content._id, data)}>{data}</button>
     }, this);
+    var deleteDisplay = this.props.content.creator_id === user? <button className="btn btn-danger btn-wide" onClick={this.props.deleteClick.bind(null, this.props.content._id)}>Delete this poll</button> : null;
+    var newOptionDisplay = user? <input className="inputBox" type="text" placeholder="Don't like these options? Add your own!" onChange={this.handleChangeCustom}/> : null;
     return (<div className="contentBox">
     <div className="paddedText head windowHeading" >{this.props.content.question}</div>
     <div className="boxContent grid-by-rows">
     {output}
-    <input className="inputBox" type="text" placeholder="Don't like these options? Add your own!" onChange={this.handleChangeCustom}/>
+    {newOptionDisplay}
     {this.state.customOption?<button className="btn btn-info btn-wide" onClick={this.props.voteClick.bind(null, this.props.content._id, this.state.customOption)}>{this.state.customOption}</button> : <div/>}
     <div id="chart_div"><GoogleDonut data={this.props.content.voted} target="chart_div"/></div>
-    <button className="btn btn-danger btn-wide" onClick={this.props.deleteClick.bind(null, this.props.content._id)}>Delete this poll</button>
+    {deleteDisplay}
     </div>
     </div>)
   }

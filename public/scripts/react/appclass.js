@@ -38,7 +38,7 @@ var AppComponent = React.createClass({
   },
   handleVoteClick: function(questionId, option) {
     // Request to server to add a vote
-    var username = user? user.name : '';
+    var username = user? user : '';
     var params = "id=" + questionId + "&answer=" + encodeURI(option) + "&userid=" + username;
     console.log("Sending params: " + params);
     this.serverRequest = $.getJSON('/api/votepoll?'+params, function (result) {
@@ -52,7 +52,7 @@ var AppComponent = React.createClass({
     // submit question, answer1 and answer2 to the server.
     // Implement a check for EMPTY question, answer1, or answer2
     console.log(answers);
-    var username = user? user.name : '';
+    var username = user? user : '';
     var answerParam = '';
     answers.forEach(function(answer) {
       answerParam = answerParam.concat("&answer="+answer);
@@ -74,7 +74,7 @@ var AppComponent = React.createClass({
     })
   },
   handleDeleteClick: function(questionId) {
-    var username = user? user.name : '';
+    var username = user? user : '';
     var params = "id=" + questionId + "&userid=" + username;
     this.serverRequest = $.getJSON('/api/deletepoll?'+params, function (result) {
       console.log(result);
@@ -97,18 +97,18 @@ var AppComponent = React.createClass({
     })
   },
   render: function() {
-    var username = user? user.name : '';
+    var username = user? user : '';
+    var createNewDisplay = user? <CreateNew onClick={this.handleCreateNewClick}/> : null;
+    var myPollsDisplay = user?(<button onClick={this.showMyPolls} className="btn btn-primary waves-effect waves-light mypollsbtn"> My Polls </button>) : null;
     return (<div className="jumbotron container">
       <div className="header">
-        <LoginArea loginHandler={this.handleLogin}/>
         <button onClick={this.returnToHomeView} className="btn btn-primary waves-effect waves-light loginbtn">
           Home
         </button>
-        <button onClick={this.showMyPolls} className="btn btn-primary waves-effect waves-light mypollsbtn">
-          My Polls
-        </button>
+        <LoginArea loginHandler={this.handleLogin}/>
+        {myPollsDisplay}
       </div>
-      <CreateNew onClick={this.handleCreateNewClick}/>
+      {createNewDisplay}
       {this.state.showList? <ListArea onClick={this.handleSelectPoll} setGlobalList={this.setGlobalList}/> : null}
       {this.state.showCreateNew && !this.state.showList?<CreateNewArea displayfunc={this.handleSubmitNewClick}/> : null}
       {this.state.showPollDetails && !this.state.showList?<PollDetailsArea content={this.state.pollTarget} voteClick={this.handleVoteClick} deleteClick={this.handleDeleteClick}/> : null}

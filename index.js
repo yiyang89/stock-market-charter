@@ -145,9 +145,7 @@ passport.authenticate('google'),
 function(request, response) {
   console.log("finished authentication");
   if (request.user) {
-    // response.set({'Content-Type':'application/json'});
-    // console.log(JSON.stringify(request.user));
-    response.redirect('/loggedin/'+JSON.stringify(request.user.emails[0].value));
+    response.render('pages/index', {'user':request.user.emails[0].value});
   } else { response.jsonp(401); }
 });
 
