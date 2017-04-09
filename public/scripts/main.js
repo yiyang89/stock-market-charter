@@ -2,8 +2,8 @@
 // Use React and jQuery
 // Globals:
 
-console.log(myVar);
-var user = myVar? myVar : null;
+var user = myUser? myUser : null;
+console.log("user: "+user);
 
 // Render app
 ReactDOM.render(<AppComponent />, document.getElementById('votingApp'));

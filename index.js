@@ -50,21 +50,8 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 
-// views is directory for all template files
 app.get('/', function(request, response) {
-  response.render('pages/index', {'user': null});
-});
-
-// views is directory for all template files
-app.get('/loggedin/:user', function(request, response) {
-  // response.sendFile(path.join(__dirname+'/views/pages/index.html'));
-  if (request.params.user) {
-    console.log("IN APP GET /loggedin");
-    console.log(request.params.user);
-    response.render('pages/index', {'user': request.params.user});
-  } else {
-    response.render('pages/index', {'user': null});
-  }
+  response.render('pages/index', {'user': null, 'poll':null});
 });
 
 // Request to backend for initial polls.
@@ -130,14 +117,34 @@ app.get('/api/deletepoll', function(request, response) {
   })
 })
 
-app.get('/api/login', function(request, response) {
-  response.redirect('/auth/google');
+// Request to backend to load a specific poll page
+app.get('/api/poll/:POLLID', function (request, response) {
+  // Get polls from mongo
+  mongowrap.getPolls(function(err, result) {
+    // Find the poll matching request.params.POLLID
+    var pollResult;
+    console.log(JSON.stringify(result));
+    console.log(request.params.POLLID);
+    result.forEach(function(entry) {
+      console.log(typeof entry._id.toString());
+      if (entry._id.toString() === request.params.POLLID) {
+        pollResult = entry;
+      }
+    });
+    console.log(pollResult)
+    if (pollResult) {
+      // Found a matching pollid
+      response.render('pages/index', {'user':null, 'poll':pollResult});
+    } else {
+      // Did not find a matching pollid
+      response.send("Could not find a poll with that id!");
+    }
+  });
 })
 
 // auth code from https://c9.io/barberboy/passport-google-oauth2-example
 // send auth request to google
-app.get('/auth/google', passport.authenticate('google', { scope: ['email profile'] }
-))
+app.get('/auth/google', passport.authenticate('google', { scope: ['email profile'] }))
 
 // get auth callback from google
 app.get('/auth/google/callback',
@@ -145,7 +152,7 @@ passport.authenticate('google'),
 function(request, response) {
   console.log("finished authentication");
   if (request.user) {
-    response.render('pages/index', {'user':request.user.emails[0].value});
+    response.render('pages/index', {'user':request.user.emails[0].value, 'poll':null});
   } else { response.jsonp(401); }
 });
 

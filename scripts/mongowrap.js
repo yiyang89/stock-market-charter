@@ -36,25 +36,6 @@ module.exports.getPolls = function(callback) {
   });
 }
 
-module.exports.getUserPolls = function(user_id, callback) {
-  MongoClient.connect(url, function (err, db) {
-    if (err) {
-      console.log('Unable to connect to the mongoDB server. Error:', err);
-    } else {
-      db.collection('polls').find({'creator_id':user_id}).toArray( function (err, result) {
-        if (err) {
-          console.log(err);
-        } else {
-          // If no results found, redirect to a page notifying user
-          console.log("mongodb getUserPolls success: " + result);
-          db.close();
-          callback(err, result);
-        }
-      });
-    }
-  });
-}
-
 module.exports.createPoll = function(user_id, poll_question, poll_answers, callback) {
   var newEntry = {"creator_id": user_id, "question": poll_question, "answers": poll_answers, "voted":[]};
   MongoClient.connect(url, function (err, db) {
