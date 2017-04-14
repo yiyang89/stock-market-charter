@@ -1,7 +1,7 @@
 {
-  "name": "timestamp-service-decky",
-  "description": "A simple timestamp api service",
-  "repository": "https://github.com/yiyang89/timestamp-service.git",
+  "name": "stock-market-charter",
+  "description": "Chart the stock market with live updates when other users add/remove a stock",
+  "repository": "https://github.com/yiyang89/stock-market-charter.git",
   "logo": "http://node-js-sample.herokuapp.com/node.svg",
   "keywords": ["node", "express", "static"],
   "image": "heroku/nodejs"
