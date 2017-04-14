@@ -41,6 +41,25 @@ a {
   font-weight: 400;
   font-size: 20px;
 }
+.stockBox {
+  height: 60px;
+  border-style: solid;
+  border-width: 3px;
+  border-color: #33b5e5;
+}
+.stockBox:hover{
+  background-color: #e0f7fa;
+}
+.inputBox {
+  height: 50%;
+  margin: 1px !important;
+}
+.btn-add {
+  height:50%;
+  width: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+}
 .inputComponent, .listComponent, .chartComponent {
   border-style: solid;
   border-width: 2px;
