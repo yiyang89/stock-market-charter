@@ -6,4 +6,4 @@ var user = myUser? myUser : null;
 console.log("user: "+user);
 
 // Render app
-ReactDOM.render(<AppComponent />, document.getElementById('votingApp'));
+ReactDOM.render(<AppComponent />, document.getElementById('stockChart'));
