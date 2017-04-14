@@ -1,5 +1,9 @@
 var ChartComponent = React.createClass({
   render: function() {
-    return null;
+    return (
+      <div className="chartComponent">
+      chart
+      </div>
+    );
   }
 })

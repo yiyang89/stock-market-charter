@@ -4,6 +4,7 @@
 
 var user = myUser? myUser : null;
 console.log("user: "+user);
+// var socket = io();
 
 // Render app
 ReactDOM.render(<AppComponent />, document.getElementById('stockChart'));

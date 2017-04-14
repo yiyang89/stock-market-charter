@@ -8,13 +8,13 @@ a {
   color: white !important;
 }
 .jumbotron {
-  color: white;
+  color: black;
   padding: 0;
   margin-top: 50px;
   /*height: 90vh;*/
-  min-height: 90vh;
+  min-height: 70vh;
   background-color: white;
-  min-width:860px;
+  min-width:90vw;
 }
 .Aligner {
   display: -webkit-flex;
@@ -28,107 +28,33 @@ a {
   align-items: center;
   -webkit-flex-direction: column;
   flex-direction: column;
-  max-width: 100%;
+  width: 20%;
+  height: 100%;
 }
-.container {
-  max-width: 50%;
-}
-.icon {
-  height:300px;
-  width:300px;
-}
-.header {
-  height: 60px;
-  width: 100%;
-  background-color: #00bcd4;
-  display: flex;
+.grid-by-columns {
   display: -webkit-flex;
-  justify-content: space-between;
-}
-.userDisplay {
-  font-size: 32px;
-  padding-top: 5px;
-}
-.createNew {
-  background-color: #80deea;
-  font-size: 32px;
-  /*margin-bottom:10px;*/
-  height:50px;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
   width: 100%;
-}
-.createNew:hover{
-  background-color: #4dd0e1;
-}
-.btn-wide {
-  width: 70%;
-}
-.contentBox {
-  width:860px;
-  min-height: 82vh;
-  background-color: white;
-  color: black;
-}
-.boxContent {
-  width: 100%;
-  transition: 0.3s;
-}
-.head {
-  padding-top: 10%;
-  /*font-size: 25px;*/
-}
-.windowHeading {
-  font-weight: 300;
-  font-size:3.56rem;
-  width: 70% !important;
-}
-.paddedText {
-  text-align: left;
-  padding-left: 15%;
-}
-.subtext {
-  font-size: 12px;
-  line-height: 1.1;
-  -webkit-margin-before: 0.5em;
-  -webkit-margin-after: 0.5em;
-}
-.inputBox {
-  width: 70% !important;
-  margin-top: 30%;
-}
-.title {
-  padding: 15px;
-  font-size: 25px;
-}
-.login {
-  /*float: right;*/
-  padding-right:5px;
-}
-.voteButton {
-  width: 70% !important;
-}
-.pollAggregateBox {
-  vertical-align: bottom;
-  height: 80px !important;
-  width: 95% !important;
-}
-.pollBox {
-  display: inline-block;
-  vertical-align: bottom;
-  height: 150px;
-  width: 260px;
-  margin: 5px;
-  margin-top:10px;
-  background-color: white;
-  border-style: solid;
-  border-color: #2196f3;
-  border-width: 1px;
-  border-left-width: 10px;
-  color: black;
-  word-wrap:break-word;
+  height:950px;
+  font-weight: 400;
   font-size: 20px;
 }
-.pollBox:hover {
-  border-color: #1565c0;
-  background-color: #e3f2fd;
-  /*border-left-width:13px;*/
+.inputComponent, .listComponent, .chartComponent {
+  border-style: solid;
+  border-width: 2px;
+  border-color: black;
+}
+.inputComponent {
+  height: 10%;
+  width: 100%;
+}
+.listComponent {
+  height: 90%;
+  width: 100%;
+}
+.chartComponent {
+  height: 100%;
+  width: 80%;
 }

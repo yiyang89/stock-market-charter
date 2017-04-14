@@ -23,10 +23,16 @@ var AppComponent = React.createClass({
     }
   },
   render: function() {
-    return (<div className="jumbotron container">
-      <div className="header">
-      Hello world.
-        </div></div>
-        );
+    return (
+    <div className="jumbotron container">
+      <div className="grid-by-columns">
+        <div className="grid-by-rows">
+          <InputComponent />
+          <ListComponent />
+        </div>
+        <ChartComponent />
+      </div>
+    </div>
+  );
   }
 });

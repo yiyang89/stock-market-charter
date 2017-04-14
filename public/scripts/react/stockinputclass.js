@@ -1,5 +1,9 @@
 var InputComponent = React.createClass({
   render: function() {
-    return null;
+    return (
+      <div className="inputComponent">
+      input
+      </div>
+    );
   }
 })
