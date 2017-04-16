@@ -27,7 +27,7 @@ var AppComponent = React.createClass({
           <InputComponent onPress={this.submitNewCode}/>
           <ListComponent stocks={this.state.stocks}/>
         </div>
-        <ChartComponent />
+        <ChartComponent stocks={this.state.stocks}/>
       </div>
     </div>
   );

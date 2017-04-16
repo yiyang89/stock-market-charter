@@ -2,8 +2,50 @@ var ChartComponent = React.createClass({
   render: function() {
     return (
       <div className="chartComponent">
-      chart
+      <div id="chart_div"><GoogleLine stocks={this.props.stocks} target="chart_div"/></div>
       </div>
     );
+  }
+})
+
+var GoogleLine = React.createClass({
+  componentDidMount: function() {
+    google.charts.load("visualization", "1", {packages:["corechart"]});
+    google.charts.setOnLoadCallback(this.drawCharts);
+  },
+  componentWillUpdate: function() {
+    console.log("In did update");
+    this.drawCharts();
+  },
+  drawCharts: function() {
+    if (this.props.stocks) {
+      // Data should be in format:
+      //  [Stock Code, Date, Closing Price]
+      var keys = Object.keys(this.props.stocks.individual);
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Date');
+      keys.forEach(function(key) {
+        data.addColumn('number', key);
+      });
+      console.log(JSON.stringify(this.props.stocks.combined));
+      data.addRows(this.props.stocks.combined);
+      var options = {
+        'width':1116,
+        'height':650,
+        focusTarget: 'category',
+        crosshair: {trigger: 'focus'}
+        // hAxis: {
+        //   title: 'Date'
+        // },
+        // vAxis: {
+        //   title: 'Closing Price'
+        // }
+      }
+      var chart = new google.visualization.LineChart(document.getElementById(this.props.target));
+      chart.draw(data, options);
+    }
+  },
+  render: function() {
+    return null;
   }
 })

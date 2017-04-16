@@ -11,10 +11,9 @@ a {
   color: black;
   padding: 0;
   margin-top: 50px;
-  /*height: 90vh;*/
-  min-height: 70vh;
+  height: 650px;
   background-color: white;
-  min-width:90vw;
+  width: 1400px !important;
 }
 .Aligner {
   display: -webkit-flex;
@@ -37,7 +36,7 @@ a {
   -webkit-flex-direction: row;
   flex-direction: row;
   width: 100%;
-  height:950px;
+  height:650px;
   font-weight: 400;
   font-size: 20px;
 }
@@ -66,11 +65,11 @@ a {
   border-color: black;
 }
 .inputComponent {
-  height: 10%;
+  height: 100px;
   width: 100%;
 }
 .listComponent {
-  height: 90%;
+  height: 550px;
   width: 100%;
 }
 .chartComponent {
