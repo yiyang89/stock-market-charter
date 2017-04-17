@@ -6,6 +6,17 @@ var AppComponent = React.createClass({
     // populate list and chart from socket
     return {stocks: null};
   },
+  componentDidMount: function() {
+    socket.on('stocklist', function(stocklist) {
+        console.log("received stocklist");
+        this.setState({stocks: stocklist});
+    }.bind(this));
+    socket.on('symbol rejected', function(msg) {
+      // TODO: deliver this message in a more appealing manner
+      console.log('received symbol rejected');
+      alert(msg);
+    });
+  },
   submitNewCode: function(code) {
     console.log('add code ' + code);
     socket.emit('add code', code);
@@ -15,19 +26,6 @@ var AppComponent = React.createClass({
     socket.emit('remove code', code);
   },
   render: function() {
-    socket.on('stocklist', function(stocklist) {
-      // if (Object.keys(stocklist.individual).length !== 0 && stocklist.combined.length === 0) {
-      //   console.log('requesting stocklist');
-      //   socket.emit('request stocklist', null);
-      // } else {
-        console.log("received stocklist");
-        this.setState({stocks: stocklist});
-      // }
-    }.bind(this));
-    socket.on('code does not exist', function(msg) {
-      // TODO: deliver this message in a more appealing manner
-      alert(msg);
-    });
     return (
     <div className="jumbotron container">
       <div className="grid-by-columns">

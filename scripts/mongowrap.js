@@ -11,6 +11,22 @@ var url = process.env.MONGO_ADDRESS;
 // getOne(code, callback) - Get the data for 1 stock code (for on add - cache functionality);
 // updateOne(data, callback) - Update stock data for all loaded stocks(aka for up to yesterday's closing);
 
+module.exports.checkExisting = function(symbol, callback) {
+  MongoClient.connect(url, function(err, db) {
+    if (err) {
+      callback(err, null);
+    } else {
+      db.collection('stockDates').find({"symbol":symbol}).toArray( function (err, result) {
+        if (err) {
+          callback(err, null);
+        } else {
+          callback(null, result);
+        }
+      })
+    }
+  })
+}
+
 module.exports.getDates = function(callback) {
   MongoClient.connect(url, function (err, db) {
     if (err) {

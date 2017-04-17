@@ -182,16 +182,43 @@ io.on('connection', function(socket) {
   socket.on('add code', function(msg) {
     console.log('Received request to add code: ' + msg);
     if (msg.length > 5) {
-      socket.emit('code does not exist', msg.toUpperCase() + " does not exist");
+      socket.emit('symbol rejected', msg.toUpperCase() + " does not exist");
+    } else if (Object.keys(loadedStocks).includes(msg.toUpperCase())) {
+      socket.emit('symbol rejected', msg.toUpperCase() + " is already in the list");
     } else {
-      loadedStocks[msg.toUpperCase()] = null;
-      checkAndGather(function(err, data) {
+      mongowrap.checkExisting(msg.toUpperCase(), function(err, data) {
         if (err) {
-          socket.emit('code does not exist', err);
+          console.log(err)
         } else {
-          io.emit('stocklist', generateReturnObject());
+          if (data.length === 0) {
+            // Verify stock symbol through yahoo
+            getQuote(msg.toUpperCase(), function(quotes) {
+              if (quotes.length === 0) {
+                socket.emit('symbol rejected', msg.toUpperCase() + " does not exist");
+              } else {
+
+                loadedStocks[msg.toUpperCase()] = null;
+                checkAndGather(function(err, data) {
+                  if (err) {
+                    socket.emit('symbol rejected', err);
+                  } else {
+                    io.emit('stocklist', generateReturnObject());
+                  }
+                });
+              }
+            });
+          } else {
+            loadedStocks[msg.toUpperCase()] = null;
+            checkAndGather(function(err, data) {
+              if (err) {
+                socket.emit('symbol rejected', err);
+              } else {
+                io.emit('stocklist', generateReturnObject());
+              }
+            });
+          }
         }
-      });
+      })
     }
   });
   socket.on('remove code', function(msg) {
