@@ -27,7 +27,8 @@ function checkAndGather(callback) {
       var tracker = 0;
       symbolsToUpdateArr.forEach(function (symbol) {
         getQuote(symbol, function(quotes) {
-          if (quotes.length === 0) {
+          if (quotes === 0) {
+            console.log(symbol + "DOES NOT EXIST");
             delete loadedStocks[symbol];
             callback(symbol+" does not exist", null);
           } else {
@@ -73,12 +74,18 @@ function getQuote(symbol, callback) {
     to: getCurrentDate()
   }, function(err, quotes) {
     console.log("Made a call to yahoofinance for symbol " + symbol);
-    if (quotes === []) {
+    // console.log(quotes);
+    if (quotes.length === 0) {
       console.log("Symbol "+symbol+" does not exist!");
       callback(0);
     } else {
       // format quotes
-      callback(quotes);
+      // Instead of an array, return an object with properties of dates.
+      var returnObj = {};
+      for (var i = 0; i < quotes.length; i++) {
+        returnObj[formatDate(new Date(quotes[i].date))] = quotes[i];
+      }
+      callback(returnObj);
     }
   })
 }
@@ -125,19 +132,37 @@ function generateStockLatest() {
 
 function generateCombined() {
   combined = [];
-  var stockKeys = Object.keys(loadedStocks);
-  var firstEntry = true;
-  stockKeys.forEach(function(key) {
-    for (var i = 0; i < loadedStocks[key].length; i++) {
-      if (firstEntry) {
-        combined.push([formatDate(new Date(loadedStocks[key][i].date)), loadedStocks[key][i].close]);
+  // Create object of form: {date: [value, value, value], date: [value, value, value]...};
+  // Goes in order of keys.
+  var keys = Object.keys(loadedStocks);
+  var temp = {};
+  // Generate object with null values, keys are dates for the past year.
+  // Courtesy of http://stackoverflow.com/questions/7114152/given-a-start-and-end-date-create-an-array-of-the-dates-between-the-two
+  var date1 = new Date();
+  var date2 = new Date(new Date - 31557600000);
+  var day;
+  while(date2 <= date1) {
+    day = date1.getDate()
+    date1 = new Date(date1.setDate(--day));
+    temp[formatDate(date1)] = [];
+  }
+  var dateKeys = Object.keys(temp);
+  dateKeys.forEach(function(dateKey) {
+    // Populate for each key
+    keys.forEach(function(key) {
+      if (loadedStocks[key][dateKey]) {
+        temp[dateKey].push(loadedStocks[key][dateKey].close);
       } else {
-        combined[i].push(loadedStocks[key][i].close);
+        temp[dateKey].push(null);
       }
-    }
-    firstEntry = false;
-    console.log("Loaded "+key+" into combined");
+    })
   })
+  // Transform into array of arrays.
+  dateKeys.forEach(function(dateKey) {
+    combined.push([dateKey].concat(temp[dateKey]));
+  })
+  combined = combined.reverse();
+  return null;
 }
 
 function formatDate(dateObject) {

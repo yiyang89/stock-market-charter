@@ -38,6 +38,7 @@ var GoogleLine = React.createClass({
           focusTarget: 'category',
           crosshair: {trigger: 'focus', orientation: 'vertical', color: 'black'},
           legend: 'top',
+          interpolateNulls: true,
           hAxis: {
             showTextEvery: 60
           }
