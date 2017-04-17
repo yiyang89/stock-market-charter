@@ -180,6 +180,9 @@ io.on('connection', function(socket) {
   //     socket.emit('stocklist', generateReturnObject());
   //   }
   // });
+  socket.on('request stocklist', function() {
+    socket.emit('stocklist', generateReturnObject());
+  });
   socket.on('disconnect', function() {
     console.log('user disconnected');
   });
