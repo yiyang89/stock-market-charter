@@ -13,7 +13,7 @@ var loadedStocks = {"AAPL":null, "GOOG": null};
 var combined = [];
 
 // On server start:
-checkAndGather(function(data) {});
+// checkAndGather(function(data) {});
 
 function checkAndGather(callback) {
   checkRecents(function(symbolsToUpdateArr) {
@@ -172,7 +172,13 @@ socketserver.listen(app.get('port'), function() {
 io.on('connection', function(socket) {
   console.log('a user connected');
   // Send loaded stocks on connect.
-  socket.emit('stocklist', generateReturnObject());
+  checkAndGather(function(err, data) {
+    if (err) {
+      console.log(err);
+    } else {
+      socket.emit('stocklist', generateReturnObject());
+    }
+  });
   socket.on('disconnect', function() {
     console.log('user disconnected');
   });
