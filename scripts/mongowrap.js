@@ -46,6 +46,9 @@ module.exports.updateDates = function(symbolsAndDates, callback) {
   })
 }
 
+
+// "GOOG":[{"_id":"58f41acb6f9ca35573bd36c1","symbol":"GOOG","quotes":[{"date":"2016-04-18T04:00:00.000Z","open":760.460022,"high":768.049988,"low":757.299988,"close":766.609985,"volume":1556000,"adjClose":766.609985,"symbol":"GOOG"},{"date":"2016-04-19T04:00:00.000Z","open":769.51001,"high":769.900024,"low":749.330017,"close":753.929993,"volume":2030500,"adjClose":753.929993,"symbol":"GOOG"},{"date":"2016-04-20T04:00:00.000Z","open":758,"high":758.132019,"low":750.01001,"close":752.669983,"volume":1529200,"adjClose":752.669983,"symbol":"GOOG"},{"date":"2016-04-21T04:00:00.000Z","open":755.380005,"high":760.450012,"low":749.549988,"close":759.140015,"volume":3060500,"adjClose":759.140015,"symbol":"GOOG"},{"date":"2016-04-22T04:00:00.000Z","open":726.299988,"high":736.119995,"low":713.609985,"close":718.77002,"volume":5951900,"adjClose":718.77002,"symbol":"GOOG"},{"date":"2016-04-25T04:00:00.000Z","open":716.099976,"high":723.929993,"low":715.590027,"close":723.150024,"volume":1959200,"adj
+// Close":723.150024,"symbol":"GOOG"},{"date":"2016-04-26T04:00:00.000Z","open":725.419983,"high":725.765991,"low":703.026001,"close":708.140015,"volume":2744600,"adjClose":708.140015,"symbol":"GOOG"},{"date":"2016-04-27T04:00:00.000Z","open":707.289978,"high":708.97998,"low":692.36499,"close":705.840027,"volume":309860
 module.exports.getData = function(stocksObject, callback) {
   MongoClient.connect(url, function(err, db) {
     if (err) {
@@ -53,12 +56,16 @@ module.exports.getData = function(stocksObject, callback) {
     } else {
       var symbols = Object.keys(stocksObject);
       var callbackObject = {};
+      tracker = 0;
       symbols.forEach(function(symbol) {
         db.collection('stockData').find({"symbol":symbol}).toArray( function (err, result) {
-          callbackObject[symbol] = result;
+          tracker++;
+          callbackObject[symbol] = result[0].quotes;
+          if (tracker === symbols.length) {
+            callback(null, callbackObject);
+          }
         });
       })
-      callback(null, callbackObject);
     }
   })
 }

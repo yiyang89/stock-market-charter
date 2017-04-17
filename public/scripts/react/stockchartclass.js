@@ -14,7 +14,6 @@ var GoogleLine = React.createClass({
     google.charts.setOnLoadCallback(this.drawCharts);
   },
   componentWillUpdate: function() {
-    console.log("In did update");
     this.drawCharts();
   },
   drawCharts: function() {
@@ -27,7 +26,7 @@ var GoogleLine = React.createClass({
       keys.forEach(function(key) {
         data.addColumn('number', key);
       });
-      console.log(JSON.stringify(this.props.stocks.combined));
+      // console.log(JSON.stringify(this.props.stocks.combined));
       data.addRows(this.props.stocks.combined);
       var options = {
         'width':1116,
@@ -43,6 +42,11 @@ var GoogleLine = React.createClass({
         // }
       }
       var chart = new google.visualization.LineChart(document.getElementById(this.props.target));
+      // Courtesy of  http://stackoverflow.com/questions/34898925/how-to-remove-default-error-message-in-google-chart
+      google.visualization.events.addListener(chart, 'error', function (googleError) {
+        google.visualization.errors.removeError(googleError.id);
+      });
+
       chart.draw(data, options);
     }
   },

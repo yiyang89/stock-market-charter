@@ -7,11 +7,11 @@ var AppComponent = React.createClass({
     return {stocks: null};
   },
   submitNewCode: function(code) {
-    console.log('add code' + code);
+    console.log('add code ' + code);
     socket.emit('add code', code);
   },
   removeCode: function(code) {
-    console.log('remove code' + code);
+    console.log('remove code ' + code);
     socket.emit('remove code', code);
   },
   render: function() {
@@ -29,7 +29,7 @@ var AppComponent = React.createClass({
       <div className="grid-by-columns">
         <div className="grid-by-rows">
           <InputComponent onPress={this.submitNewCode}/>
-          <ListComponent stocks={this.state.stocks}/>
+          <ListComponent stocks={this.state.stocks} removeItem={this.removeCode}/>
         </div>
         <ChartComponent stocks={this.state.stocks}/>
       </div>

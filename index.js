@@ -13,24 +13,53 @@ var loadedStocks = {"AAPL":null, "GOOG": null};
 var combined = [];
 
 // On server start:
-checkRecents(function(symbolArr) {
-  // Get data that needs updating from yahoo-finance
-  var tracker = 0;
-  symbolArr.forEach(function (symbol) {
-    getQuote(symbol, function(quotes) {
-      console.log("Updated data for stock symbol: " + symbol);
-      tracker++;
-      loadedStocks[symbol.toUpperCase()] = quotes;
-      if (tracker === symbolArr.length) {
-        mongowrap.updateDates(generateStockLatest(), function(msg) {});
-        mongowrap.updateData(loadedStocks, function(msg) {});
-        mongowrap.getData(loadedStocks, function(data) {
-          loadedStocks = data;
+checkAndGather(function(data) {});
+
+function checkAndGather(callback) {
+  checkRecents(function(symbolsToUpdateArr) {
+    // Get data that needs updating from yahoo-finance
+    if (symbolsToUpdateArr.length === 0) {
+      updateAndGet(false, function(data) {
+        callback(data);
+      });
+    } else {
+      var tracker = 0;
+      symbolsToUpdateArr.forEach(function (symbol) {
+        getQuote(symbol, function(quotes) {
+          console.log("Updated data for stock symbol: " + symbol);
+          tracker++;
+          loadedStocks[symbol.toUpperCase()] = quotes;
+          if (tracker === symbolsToUpdateArr.length) {
+            updateAndGet(true, function(data) {
+              callback(data);
+            });
+          }
         })
-      }
-    })
+      })
+    }
   })
-})
+}
+
+
+function updateAndGet(updateRequired, callback) {
+  if (updateRequired) {
+    mongowrap.updateDates(generateStockLatest(), function(err, msg) {});
+    mongowrap.updateData(loadedStocks, function(err, msg) {
+      mongowrap.getData(loadedStocks, function(err, data) {
+        loadedStocks = data;
+        generateCombined();
+        callback(null);
+      })
+    });
+  } else {
+    mongowrap.getData(loadedStocks, function(err, data) {
+      loadedStocks = data;
+      generateCombined();
+      callback(null);
+    })
+  }
+
+}
 
 function getQuote(symbol, callback) {
   yahooFinance.historical({
@@ -38,10 +67,12 @@ function getQuote(symbol, callback) {
     from: getOneYearDate(),
     to: getCurrentDate()
   }, function(err, quotes) {
+    console.log("Made a call to yahoofinance for symbol " + symbol);
     if (quotes === []) {
       console.log("Symbol "+symbol+" does not exist!");
       callback(0);
     } else {
+      // format quotes
       callback(quotes);
     }
   })
@@ -54,16 +85,23 @@ function checkRecents(callback) {
       console.log(err);
     } else {
       var callbackArr = [];
+      var loadedKeys = Object.keys(loadedStocks);
       // Return an array of stock symbols and dates.
       if (data.length === 0) {
-        callback(Object.keys(loadedStocks));
+        callback(loadedKeys);
       }
       data.forEach(function(datapoint) {
         if (datapoint.date !== getCurrentDate()) {
           callbackArr.push(datapoint.symbol);
         }
+        for (var i = 0; i < loadedKeys.length; i++) {
+          if (loadedKeys[i] === datapoint.symbol) {
+            loadedKeys.splice(i, 1);
+          }
+        }
       })
-      callback(callbackArr);
+
+      callback(callbackArr.concat(loadedKeys));
     }
   })
 }
@@ -77,12 +115,25 @@ function generateStockLatest() {
       updated.push({'symbol':symbol, 'date':dateString});
     }
   })
-  console.log(JSON.stringify(updated));
+  // console.log(JSON.stringify(updated));
   return updated;
 }
 
 function generateCombined() {
-
+  combined = [];
+  var stockKeys = Object.keys(loadedStocks);
+  var firstEntry = true;
+  stockKeys.forEach(function(key) {
+    for (var i = 0; i < loadedStocks[key].length; i++) {
+      if (firstEntry) {
+        combined.push([formatDate(new Date(loadedStocks[key][i].date)), loadedStocks[key][i].close]);
+      } else {
+        combined[i].push(loadedStocks[key][i].close);
+      }
+    }
+    firstEntry = false;
+    console.log("Loaded "+key+" into combined");
+  })
 }
 
 function formatDate(dateObject) {
@@ -94,6 +145,15 @@ function getCurrentDate() {
 }
 function getOneYearDate() {
   return formatDate(new Date(new Date - 31557600000));
+}
+
+function generateReturnObject() {
+  var keys = Object.keys(loadedStocks);
+  var returnObject = {'individual':{}, 'combined': combined};
+  keys.forEach (function(key) {
+    returnObject.individual[key] = null;
+  })
+  return returnObject;
 }
 
 app.get('/', function(request, response) {
@@ -108,26 +168,21 @@ socketserver.listen(app.get('port'), function() {
 io.on('connection', function(socket) {
   console.log('a user connected');
   // Send loaded stocks on connect.
-  socket.emit('stocklist', loadedStocks);
+  socket.emit('stocklist', generateReturnObject());
   socket.on('disconnect', function() {
     console.log('user disconnected');
   });
   socket.on('add code', function(msg) {
     console.log('Received request to add code: ' + msg);
-    loadedStocks.individual[msg.toUpperCase()] = null;
-    getStocks(function(data) {
-      if (data === 0) {
-        delete loadedStocks.individual[msg.toUpperCase()];
-        socket.emit('code does not exist', 'Stock code ' + msg + ' does not exist.');
-      } else {
-        io.emit('stocklist', loadedStocks);
-      }
+    loadedStocks[msg.toUpperCase()] = null;
+    checkAndGather(function(data) {
+      io.emit('stocklist', generateReturnObject());
     });
   });
   socket.on('remove code', function(msg) {
     console.log('Received request to remove code: ' + msg);
-    // TODO: CHECK IF A VALID STOCK
     delete loadedStocks[msg];
-    io.emit('stocklist', loadedStocks);
+    generateCombined();
+    io.emit('stocklist', generateReturnObject());
   });
 })
