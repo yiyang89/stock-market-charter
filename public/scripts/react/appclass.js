@@ -17,9 +17,13 @@ var AppComponent = React.createClass({
   render: function() {
     socket.on('stocklist', function(stocklist) {
       console.log("received stocklist");
-      console.log(stocklist);
+      // console.log(stocklist);
       this.setState({stocks: stocklist});
     }.bind(this));
+    socket.on('code does not exist', function(msg) {
+      // TODO: deliver this message in a more appealing manner
+      alert(msg);
+    });
     return (
     <div className="jumbotron container">
       <div className="grid-by-columns">

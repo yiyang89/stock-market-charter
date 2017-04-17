@@ -33,10 +33,11 @@ var GoogleLine = React.createClass({
         'width':1116,
         'height':650,
         focusTarget: 'category',
-        crosshair: {trigger: 'focus'}
-        // hAxis: {
-        //   title: 'Date'
-        // },
+        crosshair: {trigger: 'focus', orientation: 'vertical', color: 'black'},
+        legend: 'top',
+        hAxis: {
+          showTextEvery: 60
+        }
         // vAxis: {
         //   title: 'Closing Price'
         // }
