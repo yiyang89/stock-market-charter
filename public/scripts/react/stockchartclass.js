@@ -21,6 +21,7 @@ var GoogleLine = React.createClass({
       // Data should be in format:
       //  [Stock Code, Date, Closing Price]
       var keys = Object.keys(this.props.stocks.individual);
+      console.log(this.props.stocks);
       var data = new google.visualization.DataTable();
       data.addColumn('string', 'Date');
       keys.forEach(function(key) {

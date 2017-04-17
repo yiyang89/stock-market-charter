@@ -173,13 +173,6 @@ io.on('connection', function(socket) {
   console.log('a user connected');
   // Send loaded stocks on connect.
   socket.emit('stocklist', generateReturnObject());
-  // checkAndGather(function(err, data) {
-  //   if (err) {
-  //     console.log(err);
-  //   } else {
-  //     socket.emit('stocklist', generateReturnObject());
-  //   }
-  // });
   socket.on('request stocklist', function() {
     socket.emit('stocklist', generateReturnObject());
   });
