@@ -17,6 +17,7 @@ var AppComponent = React.createClass({
   render: function() {
     socket.on('stocklist', function(stocklist) {
       if (Object.keys(stocklist.individual).length !== 0 && stocklist.combined.length === 0) {
+        console.log('requesting stocklist');
         socket.emit('request stocklist', null);
       } else {
         console.log("received stocklist");
