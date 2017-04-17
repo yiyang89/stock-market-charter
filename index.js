@@ -20,19 +20,24 @@ function checkAndGather(callback) {
     // Get data that needs updating from yahoo-finance
     if (symbolsToUpdateArr.length === 0) {
       updateAndGet(false, function(data) {
-        callback(data);
+        callback(null,data);
       });
     } else {
       var tracker = 0;
       symbolsToUpdateArr.forEach(function (symbol) {
         getQuote(symbol, function(quotes) {
-          console.log("Updated data for stock symbol: " + symbol);
-          tracker++;
-          loadedStocks[symbol.toUpperCase()] = quotes;
-          if (tracker === symbolsToUpdateArr.length) {
-            updateAndGet(true, function(data) {
-              callback(data);
-            });
+          if (quotes.length === 0) {
+            delete loadedStocks[symbol];
+            callback(symbol+" does not exist", null);
+          } else {
+            console.log("Updated data for stock symbol: " + symbol);
+            tracker++;
+            loadedStocks[symbol.toUpperCase()] = quotes;
+            if (tracker === symbolsToUpdateArr.length) {
+              updateAndGet(true, function(data) {
+                callback(null,data);
+              });
+            }
           }
         })
       })
@@ -100,7 +105,6 @@ function checkRecents(callback) {
           }
         }
       })
-
       callback(callbackArr.concat(loadedKeys));
     }
   })
@@ -174,10 +178,18 @@ io.on('connection', function(socket) {
   });
   socket.on('add code', function(msg) {
     console.log('Received request to add code: ' + msg);
-    loadedStocks[msg.toUpperCase()] = null;
-    checkAndGather(function(data) {
-      io.emit('stocklist', generateReturnObject());
-    });
+    if (msg.length > 5) {
+      socket.emit('code does not exist', msg.toUpperCase() + " does not exist");
+    } else {
+      loadedStocks[msg.toUpperCase()] = null;
+      checkAndGather(function(err, data) {
+        if (err) {
+          socket.emit('code does not exist', err);
+        } else {
+          io.emit('stocklist', generateReturnObject());
+        }
+      });
+    }
   });
   socket.on('remove code', function(msg) {
     console.log('Received request to remove code: ' + msg);

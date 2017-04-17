@@ -43,11 +43,19 @@ a {
 .stockBox {
   height: 60px;
   border-style: solid;
-  border-width: 3px;
+  border-width: 1px;
   border-color: #33b5e5;
+  display: -webkit-flex;
+  display:flex;
+  align-items: center;
+  justify-content: flex-end;
 }
-.stockBox:hover{
-  background-color: #e0f7fa;
+.symbol {
+  margin-right: auto;
+  margin-left: 10px;
+}
+.closeButton {
+  padding: 5px 12px !important;
 }
 .inputBox {
   height: 50%;
@@ -59,20 +67,24 @@ a {
   margin: 0 !important;
   padding: 0 !important;
 }
-.inputComponent, .listComponent, .chartComponent {
-  border-style: solid;
-  border-width: 2px;
-  border-color: black;
+.inputBox {
+  text-align: center;
 }
 .inputComponent {
   height: 100px;
   width: 100%;
 }
 .listComponent {
+  overflow-y: auto;
   height: 550px;
   width: 100%;
 }
 .chartComponent {
+  overflow: hidden;
+  display: -webkit-flex;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 100%;
   width: 80%;
 }

@@ -29,8 +29,8 @@ var GoogleLine = React.createClass({
       // console.log(JSON.stringify(this.props.stocks.combined));
       data.addRows(this.props.stocks.combined);
       var options = {
-        'width':1116,
-        'height':650,
+        'width':1400,
+        'height':800,
         focusTarget: 'category',
         crosshair: {trigger: 'focus', orientation: 'vertical', color: 'black'},
         legend: 'top',
