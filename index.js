@@ -20,6 +20,7 @@ function checkAndGather(callback) {
     // Get data that needs updating from yahoo-finance
     if (symbolsToUpdateArr.length === 0) {
       updateAndGet(false, function(data) {
+        console.log("Data update not required");
         callback(null,data);
       });
     } else {
