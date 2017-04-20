@@ -12,9 +12,6 @@ app.use(express.static(__dirname + '/public'));
 var loadedStocks = {"AAPL":null, "GOOG": null};
 var combined = [];
 
-// On server start:
-checkAndGather(function(data) {});
-
 function checkAndGather(callback) {
   checkRecents(function(symbolsToUpdateArr) {
     // Get data that needs updating from yahoo-finance
@@ -191,6 +188,8 @@ app.get('/', function(request, response) {
 
 
 socketserver.listen(app.get('port'), function() {
+  // On server start:
+  checkAndGather(function(data) {});
   console.log('Node app is running on port', app.get('port'));
 })
 
