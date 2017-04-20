@@ -186,12 +186,12 @@ app.get('/', function(request, response) {
   response.render('pages/index', {'user': null, 'poll':null});
 });
 
-
-socketserver.listen(app.get('port'), function() {
-  // On server start:
-  checkAndGather(function(data) {});
-  console.log('Node app is running on port', app.get('port'));
-})
+// On server start.
+checkAndGather(function(data) {
+  socketserver.listen(app.get('port'), function() {
+    console.log('Node app is running on port', app.get('port'));
+  })
+});
 
 io.on('connection', function(socket) {
   console.log('a user connected');
