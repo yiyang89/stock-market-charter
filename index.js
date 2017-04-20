@@ -44,7 +44,6 @@ function checkAndGather(callback) {
   })
 }
 
-
 function updateAndGet(updateRequired, callback) {
   if (updateRequired) {
     mongowrap.updateDates(generateStockLatest(), function(err, msg) {});

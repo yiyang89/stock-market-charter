@@ -16,6 +16,7 @@ a {
 
 }
 .Aligner {
+  height: 80vh;
   display: -webkit-flex;
   display: flex;
   align-items: center;
