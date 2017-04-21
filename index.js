@@ -8,6 +8,24 @@ app.set('port', (process.env.PORT || 5000));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
+var mongodb = require('mongodb');
+var MongoClient = mongodb.MongoClient;
+var url = process.env.MONGO_ADDRESS;
+var mongo;
+MongoClient.connect(url, function(err, db) {
+  if (err) {
+    console.log(err)
+  } else {
+    console.log("Successfully connected to mongodb");
+    mongo = db;
+    // On server start.
+    checkAndGather(function(data) {
+      socketserver.listen(app.get('port'), function() {
+        console.log('Node app is running on port', app.get('port'));
+      })
+    });
+  }
+});
 
 var loadedStocks = {"AAPL":null, "GOOG": null};
 var combined = [];
@@ -46,16 +64,16 @@ function checkAndGather(callback) {
 
 function updateAndGet(updateRequired, callback) {
   if (updateRequired) {
-    mongowrap.updateDates(generateStockLatest(), function(err, msg) {});
-    mongowrap.updateData(loadedStocks, function(err, msg) {
-      mongowrap.getData(loadedStocks, function(err, data) {
+    mongowrap.updateDates(mongo, generateStockLatest(), function(err, msg) {});
+    mongowrap.updateData(mongo, loadedStocks, function(err, msg) {
+      mongowrap.getData(mongo, loadedStocks, function(err, data) {
         loadedStocks = data;
         generateCombined();
         callback(null);
       })
     });
   } else {
-    mongowrap.getData(loadedStocks, function(err, data) {
+    mongowrap.getData(mongo, loadedStocks, function(err, data) {
       loadedStocks = data;
       generateCombined();
       callback(null);
@@ -64,31 +82,41 @@ function updateAndGet(updateRequired, callback) {
 }
 
 function getQuote(symbol, callback) {
-  yahooFinance.historical({
-    symbol: symbol,
-    from: getOneYearDate(),
-    to: getCurrentDate()
-  }, function(err, quotes) {
-    console.log("Made a call to yahoofinance for symbol " + symbol);
-    // console.log(quotes);
-    if (quotes.length === 0) {
-      console.log("Symbol "+symbol+" does not exist!");
-      callback(0);
-    } else {
-      // format quotes
-      // Instead of an array, return an object with properties of dates.
-      var returnObj = {};
-      for (var i = 0; i < quotes.length; i++) {
-        returnObj[formatDate(new Date(quotes[i].date))] = quotes[i];
+  if (!loadedStocks[symbol]) {
+    yahooFinance.historical({
+      symbol: symbol,
+      from: getOneYearDate(),
+      to: getCurrentDate()
+    }, function(err, quotes) {
+      console.log("Made a call to yahoofinance for symbol " + symbol);
+      // console.log(quotes);
+      if (quotes.length === 0) {
+        console.log("Symbol "+symbol+" does not exist!");
+        callback(0);
+      } else {
+        formatQuote(quotes, function(data) {
+          callback(data);
+        })
       }
-      callback(returnObj);
-    }
-  })
+    })
+  } else {
+    callback(loadedStocks[symbol]);
+  }
+}
+
+function formatQuote(quotes, callback) {
+  // format quotes
+  // Instead of an array, return an object with properties of dates.
+  var returnObj = {};
+  for (var i = 0; i < quotes.length; i++) {
+    returnObj[formatDate(new Date(quotes[i].date))] = quotes[i];
+  }
+  callback(returnObj);
 }
 
 // Check mongo db for individuals.
 function checkRecents(callback) {
-  mongowrap.getDates(function(err, data) {
+  mongowrap.getDates(mongo, function(err, data) {
     if (err) {
       console.log(err);
     } else {
@@ -122,7 +150,6 @@ function generateStockLatest() {
       updated.push({'symbol':symbol, 'date':dateString});
     }
   })
-  // console.log(JSON.stringify(updated));
   return updated;
 }
 
@@ -185,13 +212,6 @@ app.get('/', function(request, response) {
   response.render('pages/index', {'user': null, 'poll':null});
 });
 
-// On server start.
-checkAndGather(function(data) {
-  socketserver.listen(app.get('port'), function() {
-    console.log('Node app is running on port', app.get('port'));
-  })
-});
-
 io.on('connection', function(socket) {
   console.log('a user connected');
   // Send loaded stocks on connect.
@@ -209,18 +229,20 @@ io.on('connection', function(socket) {
     } else if (Object.keys(loadedStocks).includes(msg.toUpperCase())) {
       socket.emit('symbol rejected', msg.toUpperCase() + " is already in the list");
     } else {
-      mongowrap.checkExisting(msg.toUpperCase(), function(err, data) {
+      // Check mongodb for data
+      // Data does not exist in our db, get data from yahoo instead.
+      mongowrap.checkExisting(mongo, msg.toUpperCase(), function(err, data) {
         if (err) {
-          console.log(err)
+          console.log(err);
         } else {
           if (data.length === 0) {
-            // Verify stock symbol through yahoo
+            // Get Data from Yahoo
             getQuote(msg.toUpperCase(), function(quotes) {
               if (quotes.length === 0) {
                 socket.emit('symbol rejected', msg.toUpperCase() + " does not exist");
               } else {
-
-                loadedStocks[msg.toUpperCase()] = null;
+                // Comes formatted from getQuote.
+                loadedStocks[msg.toUpperCase()] = quotes;
                 checkAndGather(function(err, data) {
                   if (err) {
                     socket.emit('symbol rejected', err);
@@ -231,6 +253,7 @@ io.on('connection', function(socket) {
               }
             });
           } else {
+            // Plug in the data from mongo
             loadedStocks[msg.toUpperCase()] = null;
             checkAndGather(function(err, data) {
               if (err) {
