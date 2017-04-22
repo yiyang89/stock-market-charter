@@ -91,6 +91,7 @@ a {
   border-radius: 2px;
 }
 .chartComponent {
+  background-color: white;
   margin-left: 5px;
   overflow: hidden;
   display: -webkit-flex;
