@@ -9550,6 +9550,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _react = __webpack_require__(25);
 
 var _react2 = _interopRequireDefault(_react);
@@ -9568,53 +9570,82 @@ var _stockinputclass2 = _interopRequireDefault(_stockinputclass);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 console.log("voting.js loaded successfully");
 
 // React classes
-var AppComponent = _react2.default.createClass({
-  displayName: 'AppComponent',
 
-  getInitialState: function getInitialState() {
+var AppComponent = function (_React$Component) {
+  _inherits(AppComponent, _React$Component);
+
+  function AppComponent(props) {
+    _classCallCheck(this, AppComponent);
+
+    var _this = _possibleConstructorReturn(this, (AppComponent.__proto__ || Object.getPrototypeOf(AppComponent)).call(this, props));
     // populate list and chart from socket
-    return { stocks: null };
-  },
-  componentDidMount: function componentDidMount() {
-    this.props.socket.on('stocklist', function (stocklist) {
-      console.log("received stocklist");
-      this.setState({ stocks: stocklist });
-    }.bind(this));
-    this.props.socket.on('symbol rejected', function (msg) {
-      // TODO: deliver this message in a more appealing manner
-      console.log('received symbol rejected');
-      alert(msg);
-    });
-  },
-  submitNewCode: function submitNewCode(code) {
-    console.log('add code ' + code);
-    this.props.socket.emit('add code', code);
-  },
-  removeCode: function removeCode(code) {
-    console.log('remove code ' + code);
-    this.props.socket.emit('remove code', code);
-  },
-  render: function render() {
-    return _react2.default.createElement(
-      'div',
-      { className: 'jumbotron container' },
-      _react2.default.createElement(
+
+
+    _this.state = { stocks: null };
+    _this.submitNewCode = _this.submitNewCode.bind(_this);
+    _this.removeCode = _this.removeCode.bind(_this);
+    return _this;
+  }
+
+  _createClass(AppComponent, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.props.socket.on('stocklist', function (stocklist) {
+        console.log("received stocklist");
+        this.setState({ stocks: stocklist });
+      }.bind(this));
+      this.props.socket.on('symbol rejected', function (msg) {
+        // TODO: deliver this message in a more appealing manner
+        console.log('received symbol rejected');
+        alert(msg);
+      });
+    }
+  }, {
+    key: 'submitNewCode',
+    value: function submitNewCode(code) {
+      console.log('add code ' + code);
+      this.props.socket.emit('add code', code);
+    }
+  }, {
+    key: 'removeCode',
+    value: function removeCode(code) {
+      console.log('remove code ' + code);
+      this.props.socket.emit('remove code', code);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
         'div',
-        { className: 'grid-by-columns' },
+        { className: 'jumbotron container' },
         _react2.default.createElement(
           'div',
-          { className: 'grid-by-rows' },
-          _react2.default.createElement(_stockinputclass2.default, { onPress: this.submitNewCode }),
-          _react2.default.createElement(_stocklistclass2.default, { stocks: this.state.stocks, removeItem: this.removeCode })
-        ),
-        _react2.default.createElement(_stockchartclass2.default, { stocks: this.state.stocks })
-      )
-    );
-  }
-});
+          { className: 'grid-by-columns' },
+          _react2.default.createElement(
+            'div',
+            { className: 'grid-by-rows' },
+            _react2.default.createElement(_stockinputclass2.default, { onPress: this.submitNewCode }),
+            _react2.default.createElement(_stocklistclass2.default, { stocks: this.state.stocks, removeItem: this.removeCode })
+          ),
+          _react2.default.createElement(_stockchartclass2.default, { stocks: this.state.stocks })
+        )
+      );
+    }
+  }]);
+
+  return AppComponent;
+}(_react2.default.Component);
+
+;
 
 exports.default = AppComponent;
 
@@ -9629,86 +9660,158 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _react = __webpack_require__(25);
 
 var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var ChartComponent = _react2.default.createClass({
-  displayName: "ChartComponent",
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-  render: function render() {
-    return _react2.default.createElement(
-      "div",
-      { className: "chartComponent" },
-      _react2.default.createElement(
-        "div",
-        { id: "chart_div" },
-        _react2.default.createElement(GoogleLine, { stocks: this.props.stocks, target: "chart_div" })
-      )
-    );
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ChartComponent = function (_React$Component) {
+  _inherits(ChartComponent, _React$Component);
+
+  function ChartComponent(props) {
+    _classCallCheck(this, ChartComponent);
+
+    return _possibleConstructorReturn(this, (ChartComponent.__proto__ || Object.getPrototypeOf(ChartComponent)).call(this, props));
   }
-});
+
+  _createClass(ChartComponent, [{
+    key: "render",
+    value: function render() {
+      return _react2.default.createElement(
+        "div",
+        { className: "chartComponent" },
+        _react2.default.createElement(
+          "div",
+          { id: "chart_div" },
+          _react2.default.createElement(GoogleLine, { stocks: this.props.stocks, target: "chart_div" })
+        )
+      );
+    }
+  }]);
+
+  return ChartComponent;
+}(_react2.default.Component);
 
 exports.default = ChartComponent;
 
+var GoogleLine = function (_React$Component2) {
+  _inherits(GoogleLine, _React$Component2);
 
-var GoogleLine = _react2.default.createClass({
-  displayName: "GoogleLine",
+  function GoogleLine(props) {
+    _classCallCheck(this, GoogleLine);
 
-  componentDidMount: function componentDidMount() {
-    google.charts.load("visualization", "1", { packages: ["corechart"] });
-    console.log("component mounted, drawing chart with " + this.props.stocks);
-    google.charts.setOnLoadCallback(this.drawCharts);
-  },
-  componentWillUpdate: function componentWillUpdate() {
-    console.log("component updated, drawing chart with " + this.props.stocks);
-    this.drawCharts();
-  },
-  drawCharts: function drawCharts() {
-    var drawTimer = setInterval(function () {
-      if (this.props.stocks) {
-        // Data should be in format:
-        //  [Stock Code, Date, Closing Price]
-        var keys = Object.keys(this.props.stocks.individual);
-        console.log(this.props.stocks);
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Date');
-        keys.forEach(function (key) {
-          data.addColumn('number', key);
-        });
-        // console.log(JSON.stringify(this.props.stocks.combined));
-        data.addRows(this.props.stocks.combined);
-        var options = {
-          'width': 1400,
-          'height': 800,
-          focusTarget: 'category',
-          crosshair: { trigger: 'focus', orientation: 'vertical', color: 'black' },
-          legend: 'top',
-          interpolateNulls: true,
-          hAxis: {
-            showTextEvery: 60
-          }
-          // vAxis: {
-          //   title: 'Closing Price'
-          // }
-        };
-        var chart = new google.visualization.LineChart(document.getElementById(this.props.target));
-        // Courtesy of  http://stackoverflow.com/questions/34898925/how-to-remove-default-error-message-in-google-chart
-        google.visualization.events.addListener(chart, 'error', function (googleError) {
-          google.visualization.errors.removeError(googleError.id);
-        });
-
-        chart.draw(data, options);
-        clearInterval(drawTimer);
-      }
-    }.bind(this), 500);
-  },
-  render: function render() {
-    return null;
+    return _possibleConstructorReturn(this, (GoogleLine.__proto__ || Object.getPrototypeOf(GoogleLine)).call(this, props));
   }
-});
+
+  _createClass(GoogleLine, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      google.charts.load("visualization", "1", { packages: ["corechart"] });
+      console.log("component mounted, drawing chart with " + this.props.stocks);
+      google.charts.setOnLoadCallback(this.drawCharts(this.props.stocks));
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate() {
+      if (this.props.stocks) {
+        console.log("component updated, drawing chart with " + Object.keys(this.props.stocks.individual));
+      }
+      this.drawCharts(this.props.stocks);
+    }
+  }, {
+    key: "drawCharts",
+    value: function drawCharts(stocks) {
+      var drawTimer = setInterval(function () {
+        if (stocks) {
+          // Data should be in format:
+          //  [Stock Code, Date, Closing Price]
+          var keys = Object.keys(stocks.individual);
+          console.log(stocks);
+          var data = new google.visualization.DataTable();
+          data.addColumn('string', 'Date');
+          keys.forEach(function (key) {
+            data.addColumn('number', key);
+          });
+          // console.log(JSON.stringify(this.props.stocks.combined));
+          data.addRows(stocks.combined);
+          var options = {
+            'width': 1400,
+            'height': 800,
+            focusTarget: 'category',
+            crosshair: { trigger: 'focus', orientation: 'vertical', color: 'black' },
+            legend: 'top',
+            interpolateNulls: true,
+            hAxis: {
+              showTextEvery: 60
+            }
+          };
+          var chart = new google.visualization.LineChart(document.getElementById(this.props.target));
+          // Courtesy of  http://stackoverflow.com/questions/34898925/how-to-remove-default-error-message-in-google-chart
+          google.visualization.events.addListener(chart, 'error', function (googleError) {
+            google.visualization.errors.removeError(googleError.id);
+          });
+
+          chart.draw(data, options);
+          clearInterval(drawTimer);
+        }
+      }.bind(this), 500);
+    }
+
+    // drawCharts() {
+    //   var drawTimer = setInterval(function() {
+    //     if (this.props.stocks) {
+    //       // Data should be in format:
+    //       //  [Stock Code, Date, Closing Price]
+    //       var keys = Object.keys(this.props.stocks.individual);
+    //       console.log(this.props.stocks);
+    //       var data = new google.visualization.DataTable();
+    //       data.addColumn('string', 'Date');
+    //       keys.forEach(function(key) {
+    //         data.addColumn('number', key);
+    //       });
+    //       // console.log(JSON.stringify(this.props.stocks.combined));
+    //       data.addRows(this.props.stocks.combined);
+    //       var options = {
+    //         'width':1400,
+    //         'height':800,
+    //         focusTarget: 'category',
+    //         crosshair: {trigger: 'focus', orientation: 'vertical', color: 'black'},
+    //         legend: 'top',
+    //         interpolateNulls: true,
+    //         hAxis: {
+    //           showTextEvery: 60
+    //         }
+    //       }
+    //       var chart = new google.visualization.LineChart(document.getElementById(this.props.target));
+    //       // Courtesy of  http://stackoverflow.com/questions/34898925/how-to-remove-default-error-message-in-google-chart
+    //       google.visualization.events.addListener(chart, 'error', function (googleError) {
+    //         google.visualization.errors.removeError(googleError.id);
+    //       });
+    //
+    //       chart.draw(data, options);
+    //       clearInterval(drawTimer);
+    //     }
+    //   }.bind(this), 500);
+    // }
+
+  }, {
+    key: "render",
+    value: function render() {
+      return null;
+    }
+  }]);
+
+  return GoogleLine;
+}(_react2.default.Component);
 
 /***/ }),
 /* 84 */
@@ -9721,38 +9824,65 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _react = __webpack_require__(25);
 
 var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var InputComponent = _react2.default.createClass({
-  displayName: 'InputComponent',
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-  getInitialState: function getInitialState() {
-    return { input: '' };
-  },
-  handleChange: function handleChange(event) {
-    this.setState({ input: event.target.value });
-  },
-  handleClick: function handleClick() {
-    this.props.onPress(this.state.input);
-    this.setState({ input: '' });
-  },
-  render: function render() {
-    return _react2.default.createElement(
-      'div',
-      { className: 'inputComponent' },
-      _react2.default.createElement('input', { className: 'inputBox', type: 'text', onChange: this.handleChange, placeholder: 'Enter a stock code', value: this.state.input }),
-      _react2.default.createElement(
-        'button',
-        { className: 'btn btn-info btn-add', onClick: this.handleClick },
-        'Add Stock'
-      )
-    );
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var InputComponent = function (_React$Component) {
+  _inherits(InputComponent, _React$Component);
+
+  function InputComponent(props) {
+    _classCallCheck(this, InputComponent);
+
+    var _this = _possibleConstructorReturn(this, (InputComponent.__proto__ || Object.getPrototypeOf(InputComponent)).call(this, props));
+    // populate list and chart from socket
+
+
+    _this.state = { input: '' };
+    _this.handleChange = _this.handleChange.bind(_this);
+    _this.handleClick = _this.handleClick.bind(_this);
+    return _this;
   }
-});
+
+  _createClass(InputComponent, [{
+    key: 'handleChange',
+    value: function handleChange(event) {
+      this.setState({ input: event.target.value });
+    }
+  }, {
+    key: 'handleClick',
+    value: function handleClick() {
+      this.props.onPress(this.state.input);
+      this.setState({ input: '' });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'inputComponent' },
+        _react2.default.createElement('input', { className: 'inputBox', type: 'text', onChange: this.handleChange, placeholder: 'Enter a stock code', value: this.state.input }),
+        _react2.default.createElement(
+          'button',
+          { className: 'btn btn-info btn-add', onClick: this.handleClick },
+          'Add Stock'
+        )
+      );
+    }
+  }]);
+
+  return InputComponent;
+}(_react2.default.Component);
 
 exports.default = InputComponent;
 
@@ -9767,39 +9897,58 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _react = __webpack_require__(25);
 
 var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var ListComponent = _react2.default.createClass({
-  displayName: "ListComponent",
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-  render: function render() {
-    var listjsx = !this.props.stocks ? null : Object.keys(this.props.stocks.individual).map(function (data, i) {
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ListComponent = function (_React$Component) {
+  _inherits(ListComponent, _React$Component);
+
+  function ListComponent() {
+    _classCallCheck(this, ListComponent);
+
+    return _possibleConstructorReturn(this, (ListComponent.__proto__ || Object.getPrototypeOf(ListComponent)).apply(this, arguments));
+  }
+
+  _createClass(ListComponent, [{
+    key: "render",
+    value: function render() {
+      var listjsx = !this.props.stocks ? null : Object.keys(this.props.stocks.individual).map(function (data, i) {
+        return _react2.default.createElement(
+          "div",
+          { className: "stockBox", key: i },
+          _react2.default.createElement(
+            "div",
+            { className: "symbol" },
+            data
+          ),
+          _react2.default.createElement(
+            "button",
+            { onClick: this.props.removeItem.bind(null, data), className: "btn btn-danger closeButton" },
+            "X"
+          )
+        );
+      }.bind(this));
       return _react2.default.createElement(
         "div",
-        { className: "stockBox", key: i },
-        _react2.default.createElement(
-          "div",
-          { className: "symbol" },
-          data
-        ),
-        _react2.default.createElement(
-          "button",
-          { onClick: this.props.removeItem.bind(null, data), className: "btn btn-danger closeButton" },
-          "X"
-        )
+        { className: "listComponent" },
+        listjsx
       );
-    }.bind(this));
-    return _react2.default.createElement(
-      "div",
-      { className: "listComponent" },
-      listjsx
-    );
-  }
-});
+    }
+  }]);
+
+  return ListComponent;
+}(_react2.default.Component);
 
 exports.default = ListComponent;
 

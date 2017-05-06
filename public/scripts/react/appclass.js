@@ -6,12 +6,17 @@ import InputComponent from './stockinputclass';
 console.log("voting.js loaded successfully");
 
 // React classes
-var AppComponent = React.createClass({
-  getInitialState: function() {
+class AppComponent extends React.Component{
+
+  constructor(props) {
     // populate list and chart from socket
-    return {stocks: null};
-  },
-  componentDidMount: function() {
+    super(props);
+    this.state = {stocks: null};
+    this.submitNewCode = this.submitNewCode.bind(this);
+    this.removeCode = this.removeCode.bind(this);
+  }
+
+  componentDidMount() {
     this.props.socket.on('stocklist', function(stocklist) {
         console.log("received stocklist");
         this.setState({stocks: stocklist});
@@ -21,16 +26,19 @@ var AppComponent = React.createClass({
       console.log('received symbol rejected');
       alert(msg);
     });
-  },
-  submitNewCode: function(code) {
+  }
+
+  submitNewCode(code) {
     console.log('add code ' + code);
     this.props.socket.emit('add code', code);
-  },
-  removeCode: function(code) {
+  }
+
+  removeCode(code) {
     console.log('remove code ' + code);
     this.props.socket.emit('remove code', code);
-  },
-  render: function() {
+  }
+
+  render() {
     return (
     <div className="jumbotron container">
       <div className="grid-by-columns">
@@ -43,6 +51,6 @@ var AppComponent = React.createClass({
     </div>
   );
   }
-});
+};
 
 export default AppComponent;
