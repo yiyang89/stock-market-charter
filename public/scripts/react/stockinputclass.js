@@ -1,3 +1,5 @@
+import React from 'react';
+
 var InputComponent = React.createClass({
   getInitialState: function() {
     return {input: ''};
@@ -18,3 +20,5 @@ var InputComponent = React.createClass({
     );
   }
 })
+
+export default InputComponent;

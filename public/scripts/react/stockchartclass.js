@@ -1,3 +1,5 @@
+import React from 'react';
+
 var ChartComponent = React.createClass({
   render: function() {
     return (
@@ -7,6 +9,8 @@ var ChartComponent = React.createClass({
     );
   }
 })
+
+export default ChartComponent;
 
 var GoogleLine = React.createClass({
   componentDidMount: function() {
