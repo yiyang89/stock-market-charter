@@ -23,7 +23,7 @@
     "express-session": "^1.15.2",
     "mongodb": "^2.2.25",
     "socket.io": "^1.7.3",
-    "yahoo-finance": "^0.2.16"
+    "yahoo-finance": "^0.3.2"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
